@@ -1,0 +1,3 @@
+langgraph
+pandas
+python-dotenv

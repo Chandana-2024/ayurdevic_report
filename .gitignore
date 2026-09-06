@@ -1,0 +1,9 @@
+@"
+.venv/
+.venv-1/
+.env
+__pycache__/
+*.pyc
+src/rag/vectorstore/
+src/rag/chroma_db/
+"@ | Set-Content .gitignore
