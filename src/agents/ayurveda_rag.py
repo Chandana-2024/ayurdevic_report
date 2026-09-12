@@ -1,7 +1,21 @@
 from typing import Any
+
 from src.rag.retriever import AyurvedaRetriever
 
+
 _retriever = AyurvedaRetriever()
+
+
+def _document_to_dict(document) -> dict[str, Any]:
+    """
+    Convert a LangChain Document into a simple dictionary
+    that can be passed to Agent 3 / final response.
+    """
+
+    return {
+        "content": document.page_content,
+        "metadata": document.metadata or {},
+    }
 
 
 def get_food_ayurvedic_rag_evidence(
@@ -10,13 +24,33 @@ def get_food_ayurvedic_rag_evidence(
     virya: str | None = None,
     vipaka: str | None = None,
 ) -> dict[str, Any]:
-    """Retrieve Ayurvedic food property evidence without LLM hallucination."""
-    return _retriever.retrieve_food_ayurvedic_evidence(
-        food_name=food_name,
-        rasa=rasa,
-        virya=virya,
-        vipaka=vipaka,
-    )
+    """
+    Retrieve Ayurvedic evidence about a food from the existing
+    Chroma knowledge base.
+    """
+
+    query_parts = [f"Ayurvedic properties of {food_name}"]
+
+    if rasa:
+        query_parts.append(f"Rasa: {rasa}")
+
+    if virya:
+        query_parts.append(f"Virya: {virya}")
+
+    if vipaka:
+        query_parts.append(f"Vipaka: {vipaka}")
+
+    query = ". ".join(query_parts)
+
+    documents = _retriever.search(query, k=5)
+
+    return {
+        "query": query,
+        "evidence": [
+            _document_to_dict(document)
+            for document in documents
+        ],
+    }
 
 
 def get_lifestyle_rag_evidence(
@@ -24,9 +58,31 @@ def get_lifestyle_rag_evidence(
     goal: str = "",
     health_conditions: list[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Retrieve evidence-backed lifestyle & wellness guidance for Agent 3."""
-    return _retriever.retrieve_lifestyle_knowledge(
-        primary_dosha=primary_dosha,
-        goal=goal,
-        health_conditions=health_conditions,
-    )
+    """
+    Retrieve evidence-backed lifestyle and wellness information
+    for Agent 3 from the existing Ayurvedic Chroma knowledge base.
+
+    This function does not diagnose disease or prescribe medicine.
+    """
+
+    query_parts = [
+        f"Ayurvedic lifestyle and daily routine guidance for {primary_dosha} dosha"
+    ]
+
+    if goal:
+        query_parts.append(f"Goal: {goal}")
+
+    if health_conditions:
+        query_parts.append(
+            "Health conditions/context: "
+            + ", ".join(health_conditions)
+        )
+
+    query = ". ".join(query_parts)
+
+    documents = _retriever.search(query, k=5)
+
+    return [
+        _document_to_dict(document)
+        for document in documents
+    ]

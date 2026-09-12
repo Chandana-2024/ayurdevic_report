@@ -49,6 +49,7 @@ def calculate_energy_target(patient_profile: dict[str, Any]) -> dict[str, Any]:
             "target_protein_g": 60.0,
             "target_carbs_g": 250.0,
             "target_fat_g": 65.0,
+            "target_fiber_g": 30.0,
             "calculation_basis": "Default baseline (missing profile metrics for BMR)",
         }
 
@@ -74,6 +75,7 @@ def calculate_energy_target(patient_profile: dict[str, Any]) -> dict[str, Any]:
     target_protein_g = round((target_calories * 0.18) / 4.0, 1)
     target_carbs_g = round((target_calories * 0.52) / 4.0, 1)
     target_fat_g = round((target_calories * 0.30) / 9.0, 1)
+    target_fiber_g = 30.0
 
     return {
         "bmr": round(bmr, 1),
@@ -82,6 +84,7 @@ def calculate_energy_target(patient_profile: dict[str, Any]) -> dict[str, Any]:
         "target_protein_g": target_protein_g,
         "target_carbs_g": target_carbs_g,
         "target_fat_g": target_fat_g,
+        "target_fiber_g": target_fiber_g,
         "calculation_basis": "Mifflin-St Jeor BMR (1990) with TDEE activity factor 1.375 and goal adjustment",
         "source": "Mifflin MD et al., Am J Clin Nutr. 1990;51(2):241-247.",
     }

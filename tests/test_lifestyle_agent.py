@@ -67,5 +67,10 @@ for i, source in enumerate(
     print("Book:", source["source_book"])
     print("Page:", source["page"])
     print("Author:", source["author"])
-    print("Content:")
-    print(source["content"][:500])
+    import sys
+    content_snippet = source["content"][:500]
+    try:
+        print(content_snippet)
+    except UnicodeEncodeError:
+        safe = content_snippet.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(sys.stdout.encoding or "utf-8")
+        print(safe)

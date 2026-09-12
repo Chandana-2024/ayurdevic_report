@@ -1,5 +1,7 @@
 from typing import Any
 
+from src.services.food_restrictions import matches_food_restriction
+
 
 class FoodFilter:
     """
@@ -62,18 +64,6 @@ class FoodFilter:
         foods_to_avoid: list[str],
     ) -> str | None:
 
-        food_name = food["food_name"].lower()
-
-        ingredients = [
-            item.lower()
-            for item in food.get("ingredients", [])
-        ]
-
-        allergens = [
-            item.lower()
-            for item in food.get("allergens", [])
-        ]
-
         # --------------------------------------------------
         # 1. DIETARY PREFERENCE
         # --------------------------------------------------
@@ -93,27 +83,16 @@ class FoodFilter:
         # --------------------------------------------------
 
         for allergy in allergies:
-
-            if allergy in allergens:
-                return f"Contains allergen: {allergy}"
-
-            if allergy in ingredients:
-                return f"Contains allergenic ingredient: {allergy}"
-
-            if allergy in food_name:
-                return f"Food name contains allergen: {allergy}"
+            if matches_food_restriction(food, allergy):
+                return f"Food contains allergen or related ingredient: {allergy}"
 
         # --------------------------------------------------
         # 3. FOODS TO AVOID
         # --------------------------------------------------
 
         for avoided in foods_to_avoid:
-
-            if avoided in food_name:
-                return f"Food is explicitly avoided: {avoided}"
-
-            if avoided in ingredients:
-                return f"Contains avoided ingredient: {avoided}"
+            if matches_food_restriction(food, avoided):
+                return f"Food contains avoided item or related ingredient: {avoided}"
 
         return None
 

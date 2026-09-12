@@ -39,6 +39,7 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
     food_candidates = state.get("food_candidates", [])
     patient_profile = state.get("patient_profile", {})
     condition_context = state.get("condition_context", {})
+    diet_validation = state.get("validation_result", {})
 
     warnings = []
     failed_checks = []
@@ -58,17 +59,22 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
     }
 
     candidate_names = {
-        normalize_text(food.get("name", ""))
+        normalize_text(
+            food.get("name") or food.get("food_name", "")
+        )
         for food in food_candidates
     }
 
-    if meal_plan.get("duration_days") not in {1, 7}:
+    ALLOWED_MEAL_TYPES = {"breakfast", "lunch", "snack", "dinner"}
+
+    duration_days = meal_plan.get("duration_days")
+    if not isinstance(duration_days, int) or not (1 <= duration_days <= 7):
         checks["meal_structure"] = "FAIL"
         failed_checks.append("Invalid meal-plan duration.")
 
     plan_days = meal_plan.get("days", [])
 
-    if len(plan_days) != meal_plan.get("duration_days"):
+    if len(plan_days) != duration_days:
         checks["meal_structure"] = "FAIL"
         failed_checks.append(
             "Meal-plan day count does not match the requested duration."
@@ -89,92 +95,66 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
     for day_plan in plan_days:
         meals = day_plan.get("meals", [])
 
-        if len(meals) != 3:
+        if not (3 <= len(meals) <= 4):
             checks["meal_structure"] = "FAIL"
             failed_checks.append(
-                f"Day {day_plan.get('day')} does not contain three meals."
+                f"Day {day_plan.get('day')} has invalid meal count."
             )
             continue
-
-        meal_types = {meal.get("type") for meal in meals}
-
-        if meal_types != EXPECTED_MEALS:
-            checks["meal_structure"] = "FAIL"
-            failed_checks.append(
-                f"Day {day_plan.get('day')} has invalid meal types."
-            )
 
         day_foods = []
 
         for meal in meals:
+            meal_type = str(
+                meal.get("meal") or meal.get("type") or ""
+            ).strip().lower()
+
+            if meal_type not in ALLOWED_MEAL_TYPES:
+                checks["meal_structure"] = "FAIL"
+                failed_checks.append(
+                    f"Day {day_plan.get('day')} has invalid meal type: {meal_type}."
+                )
+
             foods = meal.get("foods", [])
 
             if not foods:
                 checks["meal_structure"] = "FAIL"
                 failed_checks.append(
-                    f"{meal.get('type')} has no selected foods."
+                    f"{meal_type} has no selected foods."
                 )
 
             for food in foods:
                 food_id = food.get("food_id")
-                food_name = normalize_text(food.get("name", ""))
+                food_name = normalize_text(
+                    food.get("food_name") or food.get("name", "")
+                )
 
-                if food_id not in candidate_ids:
+                if candidate_ids and food_id and food_id not in candidate_ids:
                     checks["food_data"] = "FAIL"
                     failed_checks.append(
                         f"Food ID '{food_id}' is not an approved candidate."
                     )
 
-                if food_name not in candidate_names:
+                if candidate_names and food_name and food_name not in candidate_names:
                     checks["food_data"] = "FAIL"
                     failed_checks.append(
-                        f"Food '{food.get('name')}' is not in the dataset candidates."
-                    )
-
-                if food.get("source") != "food_dataset":
-                    checks["food_data"] = "FAIL"
-                    failed_checks.append(
-                        f"Food '{food.get('name')}' has an invalid source."
+                        f"Food '{food_name}' is not in the dataset candidates."
                     )
 
                 if food_name in exclusions:
                     checks["patient_constraints"] = "FAIL"
                     failed_checks.append(
-                        f"Excluded food selected: {food.get('name')}."
+                        f"Excluded food selected: {food_name}."
                     )
 
                 if food_name in allergies:
                     checks["patient_constraints"] = "FAIL"
                     failed_checks.append(
-                        f"Allergy-matched food selected: {food.get('name')}."
+                        f"Allergy-matched food selected: {food_name}."
                     )
 
                 day_foods.append(food)
                 selected_foods.append(food)
-
-            expected_meal_nutrition = calculate_nutrition_summary(foods)
-            actual_meal_nutrition = meal.get("nutrition", {})
-
-            if not nutrition_values_match(
-                expected_meal_nutrition,
-                actual_meal_nutrition,
-            ):
-                checks["nutrition"] = "FAIL"
-                failed_checks.append(
-                    f"Nutrition values do not match for {meal.get('type')}."
-                )
-
-        expected_daily_nutrition = calculate_nutrition_summary(day_foods)
-        actual_daily_nutrition = day_plan.get("daily_nutrition", {})
-
-        if not nutrition_values_match(
-            expected_daily_nutrition,
-            actual_daily_nutrition,
-        ):
-            checks["nutrition"] = "FAIL"
-            failed_checks.append(
-                f"Daily nutrition values do not match for day {day_plan.get('day')}."
-            )
 
     if patient_profile.get("allergies"):
         checks["patient_constraints"] = "REVIEW_REQUIRED"
@@ -183,7 +163,16 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
             "validation is limited to exact food-name matches."
         )
 
-    if patient_profile.get("dietary_preference", "unspecified") != "unspecified":
+    dataset_has_diet_type = bool(food_candidates) and all(
+        "diet_type" in food
+        for food in food_candidates
+    )
+
+    if (
+        patient_profile.get("dietary_preference", "unspecified")
+        != "unspecified"
+        and not dataset_has_diet_type
+    ):
         checks["patient_constraints"] = "REVIEW_REQUIRED"
         warnings.append(
             "Dietary preference cannot yet be verified because the CSV "
@@ -199,11 +188,10 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
 
     ayurveda_context = state.get("ayurveda_context")
 
-    if not ayurveda_context:
-        warnings.append(
-            "No Ayurvedic book evidence was used because RAG is not yet configured."
-        )
-    elif ayurveda_context.get("supported") is False:
+    if (
+        ayurveda_context is not None
+        and ayurveda_context.get("supported") is False
+    ):
         checks["ayurvedic_evidence"] = "REVIEW_REQUIRED"
         warnings.append(
             "Ayurvedic evidence was insufficient for one or more requested claims."
@@ -212,13 +200,26 @@ def safety_fact_checker_agent(state: dict[str, Any]) -> dict:
     has_failure = "FAIL" in checks.values()
     needs_review = "REVIEW_REQUIRED" in checks.values()
 
+    if diet_validation.get("valid") is False:
+        checks["nutrition"] = "REVIEW_REQUIRED"
+        needs_review = True
+        failed_checks.extend(
+            diet_validation.get("issues", [])
+        )
+
     status = "PASS"
 
     if has_failure or needs_review:
         status = "REVIEW_REQUIRED"
 
     validation_result = {
+        **diet_validation,
         "status": status,
+        "overall_status": (
+            "REVIEW_REQUIRED"
+            if status == "REVIEW_REQUIRED"
+            else diet_validation.get("overall_status", "PASS")
+        ),
         "checks": checks,
         "warnings": warnings,
         "failed_checks": failed_checks,

@@ -1,60 +1,108 @@
 from pathlib import Path
 from typing import Any
 
-from src.food_retriever import load_food_dataset
+from src.services.food_repository import FoodRepository
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-DEFAULT_CSV_PATH = (
-    PROJECT_ROOT / "data" / "ayurvedic_food_dishes_dataset_large.csv"
-)
+# Project root:
+# ayurvedic_diet_agent/
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-NUTRIENT_COLUMNS = {
-    "calories": "Calories",
-    "protein_g": "Protein_g",
-    "carbohydrates_g": "Carbs_g",
-    "fat_g": "Fat_g",
-    "fiber_g": "Fiber_g",
-}
+# Default food dataset:
+# ayurvedic_diet_agent/data/demo_foods.csv
+DEFAULT_CSV_PATH = PROJECT_ROOT / "data" / "demo_foods.csv"
 
 
-def nutrition_agent(state: dict[str, Any]) -> dict:
+def nutrition_agent(
+    state: dict[str, Any],
+) -> dict[str, Any]:
     """
-    Reads nutrition fields from the CSV schema.
+    Reads nutrition information from demo_foods.csv.
 
-    It does not invent nutrient targets or calculate meal totals because
-    the current dataset has no serving-size or quantity information.
+    Nutrition values are stored per 100g in the dataset.
+    Agent 2 later uses serving sizes and portions to build
+    the personalized meal plan.
     """
-    csv_path = Path(state.get("food_dataset_path", DEFAULT_CSV_PATH))
-    food_df = load_food_dataset(csv_path)
 
-    available_nutrients = {
-        output_name: csv_column
-        for output_name, csv_column in NUTRIENT_COLUMNS.items()
-        if csv_column in food_df.columns
-    }
+    # Allow the dataset path to be overridden through state.
+    csv_path = Path(
+        state.get(
+            "food_dataset_path",
+            DEFAULT_CSV_PATH,
+        )
+    )
 
-    missing_nutrients = [
-        output_name
-        for output_name, csv_column in NUTRIENT_COLUMNS.items()
-        if csv_column not in food_df.columns
-    ]
+    # Load food data.
+    repository = FoodRepository(csv_path)
 
-    nutrition_notes = [
-        "Nutrition values are read only from the food dataset.",
-        "Daily nutrition totals are unavailable until serving sizes "
-        "or quantities are added to the meal plan.",
-    ]
+    foods = repository.get_all_foods()
 
-    if missing_nutrients:
-        nutrition_notes.append(
-            "Unavailable nutrition fields: "
-            + ", ".join(missing_nutrients)
-            + "."
+    if not foods:
+        raise ValueError(
+            f"No foods found in the food dataset: {csv_path}"
+        )
+
+    nutrition_records = []
+
+    for food in foods:
+
+        nutrition = food.get("nutrition", {})
+        serving = food.get("serving", {})
+
+        nutrition_records.append(
+            {
+                "food_id": food.get("food_id"),
+                "food_name": food.get("food_name"),
+
+                # Nutrition per 100g
+                "calories_per_100g": nutrition.get(
+                    "calories",
+                    0.0,
+                ),
+                "protein_g_per_100g": nutrition.get(
+                    "protein_g",
+                    0.0,
+                ),
+                "carbs_g_per_100g": nutrition.get(
+                    "carbs_g",
+                    0.0,
+                ),
+                "fat_g_per_100g": nutrition.get(
+                    "fat_g",
+                    0.0,
+                ),
+                "fiber_g_per_100g": nutrition.get(
+                    "fiber_g",
+                    0.0,
+                ),
+
+                # Serving information
+                "default_serving_g": serving.get(
+                    "default_g",
+                    0.0,
+                ),
+                "min_serving_g": serving.get(
+                    "min_g",
+                    0.0,
+                ),
+                "max_serving_g": serving.get(
+                    "max_g",
+                    0.0,
+                ),
+            }
         )
 
     nutrition_context = {
-        "source": "food_dataset",
+        "source": "data/demo_foods.csv",
+
+        "food_count": len(
+            nutrition_records
+        ),
+
+        "nutrition_records": nutrition_records,
+
+        # These will be calculated later by
+        # the diet-target component.
         "daily_targets": {
             "calories": None,
             "protein_g": None,
@@ -62,10 +110,20 @@ def nutrition_agent(state: dict[str, Any]) -> dict:
             "fat_g": None,
             "fiber_g": None,
         },
-        "available_nutrients": available_nutrients,
-        "missing_nutrients": missing_nutrients,
-        "constraints": [],
-        "nutrition_notes": nutrition_notes,
+
+        "nutrition_notes": [
+            "Nutrition values are read from "
+            "demo_foods.csv.",
+
+            "Nutrition values are provided per 100g.",
+
+            "Serving-size ranges are available "
+            "in the food dataset.",
+
+            "Daily nutrition targets are calculated "
+            "by the diet-target component when "
+            "patient measurements are available.",
+        ],
     }
 
     return {

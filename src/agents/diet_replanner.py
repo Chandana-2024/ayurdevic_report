@@ -76,3 +76,54 @@ class DietReplanner:
             "validation": best_validation,
             "replanned": True,
         }
+
+    def replan_days(
+        self,
+        ranked_foods: list[dict[str, Any]],
+        daily_target: float,
+        plan_days: int,
+        patient_profile: dict[str, Any],
+        build_day,
+        validate_days,
+        max_attempts: int = 3,
+    ) -> dict[str, Any]:
+        """Try alternative ranked-food starting positions for Agent 2."""
+        best_plan = None
+        best_validation = None
+        best_key = (True, float("inf"))
+
+        attempt_count = min(max_attempts, max(1, len(ranked_foods)))
+
+        for start_index in range(attempt_count):
+            candidate_days = [
+                build_day(day_number, start_index)
+                for day_number in range(1, plan_days + 1)
+            ]
+            validation = validate_days(
+                candidate_days,
+                patient_profile,
+                daily_target,
+            )
+            total_error = sum(
+                abs(item["daily_calorie_difference"])
+                for item in validation.get("daily_summaries", [])
+            )
+            candidate_key = (not bool(validation.get("valid")), total_error)
+
+            if best_plan is None or candidate_key < best_key:
+                best_plan = candidate_days
+                best_validation = validation
+                best_key = candidate_key
+
+            if validation.get("valid"):
+                return {
+                    "plan": candidate_days,
+                    "validation": validation,
+                    "replanned": start_index > 0,
+                }
+
+        return {
+            "plan": best_plan or [],
+            "validation": best_validation or {},
+            "replanned": True,
+        }

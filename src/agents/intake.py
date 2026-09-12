@@ -57,8 +57,8 @@ def intake_profile_agent(state: dict[str, Any]) -> dict:
                 "Expected Vata, Pitta, or Kapha."
             )
 
-    if plan_days not in {1, 7}:
-        raise ValueError("Plan duration must be 1 or 7 days.")
+    if not isinstance(plan_days, int) or not (1 <= plan_days <= 7):
+        raise ValueError("Plan duration must be between 1 and 7 days.")
 
     raw_profile = state.get("patient_profile") or state.get("user_input", {})
     patient_profile = validate_patient_profile(raw_profile)
