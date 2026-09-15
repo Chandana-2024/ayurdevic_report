@@ -3,7 +3,15 @@ from typing import Any
 from src.rag.retriever import AyurvedaRetriever
 
 
-_retriever = AyurvedaRetriever()
+_retriever: AyurvedaRetriever | None = None
+
+
+def _get_retriever() -> AyurvedaRetriever:
+    """Delay model loading until Agent 3 actually needs RAG retrieval."""
+    global _retriever
+    if _retriever is None:
+        _retriever = AyurvedaRetriever()
+    return _retriever
 
 
 def _document_to_dict(document) -> dict[str, Any]:
@@ -42,7 +50,7 @@ def get_food_ayurvedic_rag_evidence(
 
     query = ". ".join(query_parts)
 
-    documents = _retriever.search(query, k=5)
+    documents = _get_retriever().search(query, k=5)
 
     return {
         "query": query,
@@ -57,6 +65,7 @@ def get_lifestyle_rag_evidence(
     primary_dosha: str,
     goal: str = "",
     health_conditions: list[str] | None = None,
+    patient_context: str = "",
 ) -> list[dict[str, Any]]:
     """
     Retrieve evidence-backed lifestyle and wellness information
@@ -68,6 +77,8 @@ def get_lifestyle_rag_evidence(
     query_parts = [
         f"Ayurvedic lifestyle and daily routine guidance for {primary_dosha} dosha"
     ]
+    if patient_context:
+        query_parts.append("Patient-specific routine context: " + patient_context)
 
     if goal:
         query_parts.append(f"Goal: {goal}")
@@ -80,7 +91,7 @@ def get_lifestyle_rag_evidence(
 
     query = ". ".join(query_parts)
 
-    documents = _retriever.search(query, k=5)
+    documents = _get_retriever().search(query, k=5)
 
     return [
         _document_to_dict(document)

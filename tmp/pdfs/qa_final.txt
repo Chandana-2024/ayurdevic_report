@@ -1,0 +1,261 @@
+VedAmrit | English-only AI-assisted wellness workflow
+FINAL PERSONALIZED WELLNESS REPORT
+Page 1
+ VedAmrit
+ FINAL PERSONALIZED WELLNESS REPORT
+Report status
+DOCTOR APPROVED
+Report 2ed8c78b-7f1f-4969-9fa9-dd79d181f0a4 | Session 16707d97-b823-4f05-ab9d-ffc95f2ab437 | Approved version 1 | Approval date
+2026-09-15T08:54:26.611739+00:00
+DOCTOR APPROVED
+2. Patient Profile
+Field
+Information
+Name
+SYNTHETIC QA FIXTURE - NOT A PATIENT
+Age
+Not provided
+Gender
+Not provided
+Height Cm
+Not provided
+Weight Kg
+Not provided
+3. Relevant Pre-consultation Summary
+Goal: Not provided, Main Complaint: Not provided, Health Conditions: Not provided
+4. Doctor-reviewed Assessment
+Assessment
+Doctor-reviewed result
+Prakriti
+Vata
+Vikriti
+Vata
+Agni
+Vishamagni
+Symptoms
+Not provided
+Doctor Assessment
+Not provided
+5. Personalized Nutrition Analysis
+NUTRITION REVIEW REQUIRED
+Full-plan totals: Calories: 3500.0, Protein G: 175.0, Carbohydrates G: 525.0, Fat G: 70.0, Fiber G: 105.0
+Weekly totals: Week: 1, Days: 1, Totals: Calories: 3500.0, Protein G: 175.0, Carbohydrates G: 525.0, Fat G: 70.0, Fiber G: 105.0
+Target versus actual: Day: 1, Difference: Calories: Not provided, Protein G: Not provided, Carbohydrates G: Not provided, Fat G: Not
+provided, Fiber G: Not provided
+6. Food Preferences, Allergies and Restrictions
+Dietary preference: Not provided | Allergies: Not provided | Intolerances: Not provided | Avoided foods: Not provided | Doctor restrictions:
+Not provided
+7. Foods to Prioritize
+Not provided
+8. Foods to Avoid or Limit
+Not provided
+
+VedAmrit | English-only AI-assisted wellness workflow
+FINAL PERSONALIZED WELLNESS REPORT
+Page 2
+9. Personalized Diet Plan from Agent 2
+Day 1
+Meal
+Food / portion
+Nutrition
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+
+VedAmrit | English-only AI-assisted wellness workflow
+FINAL PERSONALIZED WELLNESS REPORT
+Page 3
+Meal
+Food / portion
+Nutrition
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+Breakfast
+Moong (100 g)
+Calories: 100, Protein G: 5, Carbs G: 15, Fat G: 2, Fiber G:
+3
+10. Daily Nutrition Summary
+Day
+Calculated daily nutrition
+1
+Calories: 3500.0, Protein G: 175.0, Carbohydrates G: 525.0, Fat G: 70.0, Fiber G: 105.0
+11. Personalized Lifestyle and Wellness Advice from Agent 3
+Not provided
+12. Doctor-approved Wellness Advice
+Not provided
+13. Medicines and Prescriptions
+Medicine
+Dosage
+Frequency
+Duration
+Instructions
+Not provided
+Not provided
+Not provided
+Not provided
+Doctor entry or approval required
+14. Follow-up Plan
+Follow-up date
+Not provided
+Instructions / progress monitoring
+Not provided | Progress monitoring: Not provided
+
+VedAmrit | English-only AI-assisted wellness workflow
+FINAL PERSONALIZED WELLNESS REPORT
+Page 4
+15. Safety and Fact-check Review
+NUTRITION REVIEW REQUIRED: cannot verify portion nutrition for Moong against source.; REVIEW REQUIRED: allergies is unknown;
+record an explicit none or not applicable when confirmed.; REVIEW REQUIRED: medicine allergies is unknown; record an explicit none or
+not applicable when confirmed.; REVIEW REQUIRED: food intolerances is unknown; record an explicit none or not applicable when
+confirmed.; REVIEW REQUIRED: foods to avoid is unknown; record an explicit none or not applicable when confirmed.; REVIEW
+REQUIRED: health conditions is unknown; record an explicit none or not applicable when confirmed.; REVIEW REQUIRED: medication
+restrictions is unknown; record an explicit none or not applicable when confirmed.; REVIEW REQUIRED: pregnancy information is
+unknown; record an explicit none or not applicable when confirmed.; REVIEW REQUIRED: significant dietary restrictions is unknown;
+record an explicit none or not applicable when confirmed.
+16. References / Evidence
+Source dataset: data/demo_foods.csv
+Lifestyle references: Not provided
+17. Educational Disclaimer
+Traditional Ayurvedic wellness education is not a diagnosis, prescription, disease treatment, cure, prevention promise or guarantee. Follow
+the reviewing doctor instructions and seek qualified care for severe symptoms.
+18. Doctor Approval and Signature
+Doctor
+SYNTHETIC TEST REVIEWER - NOT CLINICAL APPROVAL
+Registration / qualification
+REG-1 / Not provided
+Approval date / sign-off
+2026-09-15T08:54:26.611739+00:00 / SYNTHETIC QA SIGN-OFF
+Doctor Final Comments
+Not provided
+Doctor contact: Not provided

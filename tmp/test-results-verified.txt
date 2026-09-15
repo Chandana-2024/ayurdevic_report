@@ -1,0 +1,574 @@
+C:\Users\SREE\AppData\Roaming\Python\Python311\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+C:\Users\SREE\AppData\Roaming\Python\Python311\site-packages\sklearn\base.py:376: InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeClassifier from version 1.9.0 when using version 1.4.1.post1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+
+==============================
+FINAL REPLANNED DIET
+==============================
+
+Replanned: True
+Overall valid: False
+
+BREAKFAST
+Target calories: 443.1
+Actual calories: 445.2
+Difference: 2.1
+ - Dosa | 265 g | 445.2 kcal
+Valid: True
+Issues: None
+
+LUNCH
+Target calories: 620.3
+Actual calories: 635.5
+Difference: 15.2
+ - Rice with Dal Tadka | 250 g | 325.0 kcal
+ - Vegetable Sambar | 345 g | 310.5 kcal
+Valid: True
+Issues: None
+
+SNACK
+Target calories: 177.2
+Actual calories: 182.0
+Difference: 4.8
+ - Coconut Date Balls | 65 g | 182.0 kcal
+Valid: True
+Issues: None
+
+DINNER
+Target calories: 531.7
+Actual calories: 590.5
+Difference: 58.8
+ - Rice with Dal Tadka | 250 g | 325.0 kcal
+ - Vegetable Sambar | 295 g | 265.5 kcal
+Valid: False
+Issues:
+ - Calorie target exceeded by 58.8 kcal
+
+==============================
+DIET VALIDATION
+==============================
+
+Overall valid: False
+
+BREAKFAST
+Target calories: 443.1
+Actual calories: 451.5
+Calorie difference: 8.4
+Valid: True
+Issues: None
+
+LUNCH
+Target calories: 620.3
+Actual calories: 687.5
+Calorie difference: 67.2
+Valid: False
+Issues:
+ - Calorie target exceeded by 67.2 kcal
+
+SNACK
+Target calories: 177.2
+Actual calories: 200.0
+Calorie difference: 22.8
+Valid: False
+Issues:
+ - Calorie target exceeded by 22.8 kcal
+
+DINNER
+Target calories: 531.7
+Actual calories: 628.0
+Calorie difference: 96.3
+Valid: False
+Issues:
+ - Calorie target exceeded by 96.3 kcal
+
+============================================================
+STARTING AYURGENIX FULL LANGGRAPH TEST
+============================================================
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1622.10it/s]
+
+============================================================
+PDF REPORT GENERATED
+============================================================
+PDF Path: reports\AI_Assessment_Report_db9104b8-a1c5-4c4e-81ce-8d638bb3fca6.pdf
+
+============================================================
+LANGGRAPH EXECUTION COMPLETED
+============================================================
+
+DISEASE SCREENING
+----------------------------
+Predicted condition: Gastritis
+Model probability: 1.0
+Status: screening_only
+
+PRAKRITI
+----------------------------
+Constitution: Vata-Pitta
+Primary: Vata
+Secondary: Pitta
+
+VIKRITI
+----------------------------
+Dominant Dosha: Pitta
+Scores: {'Vata': 13, 'Pitta': 27, 'Kapha': 13}
+
+AGNI
+----------------------------
+Status: Samagni
+Category Scores: {'Mandagni': 0, 'Vishamagni': 0, 'Samagni': 11, 'Tikshnagni': 0}
+
+DIET PLAN
+----------------------------
+Diet plan generated successfully.
+
+LIFESTYLE
+----------------------------
+Lifestyle plan generated successfully.
+
+FINAL RESPONSE
+----------------------------
+Final report generated successfully.
+
+
+============================================================
+COMPLETE AYURGENIX REPORT
+============================================================
+
+DOCTOR VERIFICATION REQUIRED
+AI-GENERATED — DOCTOR REVIEW REQUIRED
+Review assessment, diet and lifestyle drafts in the doctor workflow.
+
+============================================================
+TEST FINISHED
+============================================================
+
+===================================
+AYURGENIX - AGENT 3
+===================================
+
+Agent: Personalized Lifestyle RAG Agent
+Status: AI-GENERATED - DOCTOR REVIEW REQUIRED
+
+--- Lifestyle Plan ---
+
+
+### RECOMMENDATIONS
+- {'category': 'daily_routine', 'personalized_recommendation': 'Use a stable wake, meal, and wind-down schedule that fits your current daily commitments.', 'patient_specific_reason': 'This is tailored to Vata and the recorded goal of general wellness.', 'factors_used': {'prakriti': 'Vata-Pitta', 'vikriti': 'Vata', 'agni': 'Vishamagni', 'goal': 'general wellness', 'age': 19, 'sex': 'female', 'dietary_preference': 'vegetarian', 'restrictions': False}, 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Adjust for work, caregiving, symptoms, and doctor instructions; do not use this as treatment.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'meal_timing', 'personalized_recommendation': 'Use the existing Agent 2 meal schedule as an anchor and record skipped meals and digestive discomfort for doctor review; avoid compensatory fasting.', 'patient_specific_reason': 'Agni is recorded as Vishamagni, so timing guidance requires clinical review if symptoms persist.', 'factors_used': {'prakriti': 'Vata-Pitta', 'vikriti': 'Vata', 'agni': 'Vishamagni', 'goal': 'general wellness', 'age': 19, 'sex': 'female', 'dietary_preference': 'vegetarian', 'restrictions': False}, 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'This is not a diet plan and does not override Agent 2, allergies, conditions, or doctor restrictions.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'sleep', 'personalized_recommendation': 'Set a consistent, low-stimulation pre-sleep routine and record whether sleep quality changes over the next review period.', 'patient_specific_reason': 'Sleep information is not provided; Vata/Pitta-related assessment factors also make regular wind-down especially relevant.', 'factors_used': {'prakriti': 'Vata-Pitta', 'vikriti': 'Vata', 'agni': 'Vishamagni', 'goal': 'general wellness', 'age': 19, 'sex': 'female', 'dietary_preference': 'vegetarian', 'restrictions': False}, 'ayurvedic_basis': {'source': 'Sushruta Samhita 1.pdf', 'page': '185', 'support': 'Retrieved Ayurvedic passage for doctor verification; topic matching alone does not verify a recommendation.', 'excerpt': 'Chap. XX.] SUTRASTHANAM. 185\nChilli, the V^stuka, the Sunishannaka the Jivanti, the\nTanduliyaka, and the Mandukaparni, etc. Clarified-\nbutter, the salt known as the Saindhava, and the\nluscious juice of the pomegranate and the Amalakam,\nshould be generally deemed the most wholesome articles\nof food.\nSimilarly, the practise of self-control, residence in a\nroom protected from the strong gusts of wind, sleeping\nonly at night, tepid water,and moderate physical exercise\nshould be regarded as absolutely conducive to a better\npreservation of health.\nWe have already enumerated the names of sub-\nstances which are absolutely beneficial or uncondi-\ntionally injurious to human health. Things which are\nboth wholesome and injurious are those, which, for\nexample, may prove beneficial in a distemper of\nthe bodily.Vayu though otherwise in a Pittaja affec-\ntion. The Valli fruit, the Karaka, the Karira, the\nAmla-phala, the salt, the Kulattha, the Pinyaka, curd,', 'verified': False}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Seek clinical assessment for severe, persistent, or safety-critical sleep problems.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'stress_management', 'personalized_recommendation': 'Schedule a brief, non-strenuous calming practice you already tolerate, such as quiet breathing or reflection, and note its effect on routine and sleep.', 'patient_specific_reason': 'Stress is not provided; this is adapted to the current Vata assessment rather than offered as a cure.', 'factors_used': {'prakriti': 'Vata-Pitta', 'vikriti': 'Vata', 'agni': 'Vishamagni', 'goal': 'general wellness', 'age': 19, 'sex': 'female', 'dietary_preference': 'vegetarian', 'restrictions': False}, 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Do not use this in place of mental-health, emergency, or medical care.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+
+### PERSONALIZATION_FACTORS
+- prakriti
+- vikriti
+- agni
+- goal
+- age
+- sex
+- dietary_preference
+- restrictions
+
+### RAG_EVIDENCE
+- {'content': '12 \n \nDefinitions and Theory \n \nPhysician \nAyurveda \nHappy life \nHealthy person \nThe 8 Branches of Ayurveda \nSimilarity and Dissimilarity \n*Substances \nSupreme Self \n“Paradi”- means of success in treatment', 'metadata': {'moddate': '2003-09-15T14:07:05-04:00', 'source_book': 'Charaka-Samhita-Acharya-Charaka (1).pdf', 'source': 'C:\\Users\\SREE\\ayurvedic_diet_agent\\src\\rag\\books\\Charaka-Samhita-Acharya-Charaka (1).pdf', 'author': 'Connie Reavis', 'title': 'Microsoft Word - charakapublish2003.2.volumeI.wrd.doc', 'page': 11, 'producer': 'Acrobat Distiller 5.0.5 (Windows)', 'creator': 'PScript5.dll Version 5.2', 'page_label': '12', 'creationdate': '2003-09-15T18:04:10+00:00', 'total_pages': 621}}
+....................................
+----------------------------------------------------------------------
+Ran 36 tests in 1.476s
+
+OK
+- {'content': 'Chap. XX.] SUTRASTHANAM. 185\nChilli, the V^stuka, the Sunishannaka the Jivanti, the\nTanduliyaka, and the Mandukaparni, etc. Clarified-\nbutter, the salt known as the Saindhava, and the\nluscious juice of the pomegranate and the Amalakam,\nshould be generally deemed the most wholesome articles\nof food.\nSimilarly, the practise of self-control, residence in a\nroom protected from the strong gusts of wind, sleeping\nonly at night, tepid water,and moderate physical exercise\nshould be regarded as absolutely conducive to a better\npreservation of health.\nWe have already enumerated the names of sub-\nstances which are absolutely beneficial or uncondi-\ntionally injurious to human health. Things which are\nboth wholesome and injurious are those, which, for\nexample, may prove beneficial in a distemper of\nthe bodily.Vayu though otherwise in a Pittaja affec-\ntion. The Valli fruit, the Karaka, the Karira, the\nAmla-phala, the salt, the Kulattha, the Pinyaka, curd,', 'metadata': {'author': 'Susruta', 'total_pages': 680, 'creationdate': '2010-12-16T23:45:56+00:00', 'moddate': "D:20101217011512Z00'00'", 'source': 'C:\\Users\\SREE\\ayurvedic_diet_agent\\src\\rag\\books\\Sushruta Samhita 1.pdf', 'creator': 'Digitized by the Internet Archive', 'title': 'An English translation of the Sushruta samhita, based on original Sanskrit text. Edited and published by Kaviraj Kunja Lal Bhishagratna. With a full and comprehensive introd., translation of different readings, notes, comperative views, index, glossary and plates', 'keywords': 'http://www.archive.org/details/englishtranslati01susruoft', 'source_book': 'Sushruta Samhita 1.pdf', 'page': 288, 'page_label': '185', 'producer': 'Recoded by LuraDocument PDF v2.28'}}
+- {'content': 'Astanga Hridaya Sutrasthan \nPage No. 179               Astanga Hridaya Sutrasthan \nkeeping awake at night, \nExercises of different kinds, \nWorry, \nDry massage of the body; \nVamana – emesis therapy, \ndrinking of soups- of grains \nUse of honey, \nTherapies and medicines that reduce fat, \nInhalation of medicinal smoke, \nFasting, \nGargling \nFacing difficulties 10-12 \n \nउप\x00मः पृथ\x00दोषान् यो अयमु\x00\x00\x00य क\x00\x00त\x00तः \nसंसग\x00सि\x00नपातेषु त यथा\x00वं \x00वक\x00पयेत ्  \n \nThe different treatment prescribed for each Dosha individually, may be combined appropriately \nin conditions of combinations of two or three Doshas.  13 \n \n\x00ै\x00मः \x00ायो म\x00ि\x00प\x00ते वास\x00त कफमा\x00ते ।  \nम\x00तो योगवा\x00ह\x00वात, कफ\x00प\x00ते तु शारदः ॥१४॥ \n \nGenerally the treatment for the combination of Vata and Pitta is similar to the regimen of \nsummer- described in Chapter 3. \n \nFor Kapha and Vata combination treatment, it is similar to the regimen of Vasanta- spring \nbecause Maruta- Vata is Yogavahi; Yogavahi means, Vata, when associated with Pitta, boosts', 'metadata': {'creator': '', 'total_pages': 352, 'moddate': '2013-12-31T22:55:37+05:45', 'source': 'C:\\Users\\SREE\\ayurvedic_diet_agent\\src\\rag\\books\\astanga-hridaya-sutrasthan-handbook.pdf', 'producer': 'Foxit PDF Toolbar Printer Version 1.0.0.1202', 'source_book': 'astanga-hridaya-sutrasthan-handbook.pdf', 'page': 178, 'creationdate': '2013-12-31T22:23:58+05:45', 'author': '', 'subject': '', 'page_label': '179', 'keywords': '', 'title': ''}}
+- {'content': 'Ill "^ ,\nthe reproductive activity oftlfe body in certaiR)*instances.\nwould appear to be the more correct description. In\ncases like this we h\'ave not put before our readers,\nany suggestions of our own, but left them free to\ndraw their own inference. And for this purpose we\nfurther intend to Append to the last volume of this\nwork an index a,nd a glossary illustrating the possible\nmeanings of the Ayurvedic terms with English and\nLatin synonyms, wherever possible. The true meaning\nof the Ayurveda can be better explained or understood\nonly with the light of moder.n science, and we leave it\nto our European colleagues to carry on the research on\nthe lines we have suggested with regard to this ancient\nS3\'stem of medicine, which a better knowledge of its\nprinciples and methods will enable them to do.\nBy a lamentable oversight, the terms Vayu, Pittani,\nKaphah and Dosha have been translated as wind, bile,\nphlegm and humour in the first few chapters.', 'metadata': {'source': 'C:\\Users\\SREE\\ayurvedic_diet_agent\\src\\rag\\books\\Sushruta Samhita 1.pdf', 'total_pages': 680, 'title': 'An English translation of the Sushruta samhita, based on original Sanskrit text. Edited and published by Kaviraj Kunja Lal Bhishagratna. With a full and comprehensive introd., translation of different readings, notes, comperative views, index, glossary and plates', 'page': 14, 'author': 'Susruta', 'producer': 'Recoded by LuraDocument PDF v2.28', 'keywords': 'http://www.archive.org/details/englishtranslati01susruoft', 'creator': 'Digitized by the Internet Archive', 'source_book': 'Sushruta Samhita 1.pdf', 'page_label': '', 'creationdate': '2010-12-16T23:45:56+00:00', 'moddate': "D:20101217011512Z00'00'"}}
+- {'content': 'Astanga Hridaya Sutrasthan \nPage No. 232               Astanga Hridaya Sutrasthan \nसंशोधना\x00\x00व\x00ाव\x00नेहयोजनल\x00घनैः  \nया\x00यि\x00नम\x00\x00दतां त\x00मा\x00 \x00मं पेया\x00दमाचरेत ्  \n \nThe digestive activity becomes weak by purification therapies, blood letting, oleation and fasting; \nhence the regimen of Peya- thin Gruel etc. should be followed. 45b-46a \n \n\x00ुता\x00य\x00प\x00त\x00ले\x00माणं म\x00यपं वातपैि\x00तकम ् \nपेयां न् पायये\x00तेषां तप\x00णा\x00द\x00मो \x00हतः   \n \nPeya should not be given when only little quantities of Pitta and Kapha are expelled out, to the \nperson is Addicted to wine, and in whom Vata and Pitta are Predominant; for them regimen of \nTarpana etc. – nourishing therapy are suitable. 46b-47a \n \nअप\x00वं वमनं दोषान् प\x00यमानं \x00वरेचनम् \n\x00नह\x00रे\x00वमन\x00यातः पाकं न \x00\x00तपालयेत ्  \n \nVamana (Emesis) brings out Doshas which are not cooked (processed by heat) \nWhereas Virechana (purgation) brings  out the Doshas which have undergone Paka (cooking- \nprocess by heat); hence in case of emesis – the physician need not await Doshapaka (cooking of', 'metadata': {'producer': 'Foxit PDF Toolbar Printer Version 1.0.0.1202', 'creator': '', 'moddate': '2013-12-31T22:55:37+05:45', 'total_pages': 352, 'page': 231, 'title': '', 'source_book': 'astanga-hridaya-sutrasthan-handbook.pdf', 'subject': '', 'creationdate': '2013-12-31T22:23:58+05:45', 'source': 'C:\\Users\\SREE\\ayurvedic_diet_agent\\src\\rag\\books\\astanga-hridaya-sutrasthan-handbook.pdf', 'author': '', 'keywords': '', 'page_label': '232'}}
+
+### RAG_QUERY
+- {
+- "
+- a
+- g
+- e
+- "
+- :
+-  
+- 1
+- 9
+- ,
+-  
+- "
+- a
+- g
+- n
+- i
+- "
+- :
+-  
+- "
+- V
+- i
+- s
+- h
+- a
+- m
+- a
+- g
+- n
+- i
+- "
+- ,
+-  
+- "
+- d
+- i
+- e
+- t
+- a
+- r
+- y
+- _
+- p
+- r
+- e
+- f
+- e
+- r
+- e
+- n
+- c
+- e
+- "
+- :
+-  
+- "
+- v
+- e
+- g
+- e
+- t
+- a
+- r
+- i
+- a
+- n
+- "
+- ,
+-  
+- "
+- g
+- o
+- a
+- l
+- "
+- :
+-  
+- "
+- g
+- e
+- n
+- e
+- r
+- a
+- l
+-  
+- w
+- e
+- l
+- l
+- n
+- e
+- s
+- s
+- "
+- ,
+-  
+- "
+- p
+- r
+- a
+- k
+- r
+- i
+- t
+- i
+- "
+- :
+-  
+- "
+- V
+- a
+- t
+- a
+- -
+- P
+- i
+- t
+- t
+- a
+- "
+- ,
+-  
+- "
+- r
+- e
+- s
+- t
+- r
+- i
+- c
+- t
+- i
+- o
+- n
+- s
+- "
+- :
+-  
+- f
+- a
+- l
+- s
+- e
+- ,
+-  
+- "
+- s
+- e
+- x
+- "
+- :
+-  
+- "
+- f
+- e
+- m
+- a
+- l
+- e
+- "
+- ,
+-  
+- "
+- v
+- i
+- k
+- r
+- i
+- t
+- i
+- "
+- :
+-  
+- "
+- V
+- a
+- t
+- a
+- "
+- }
+
+### SAFETY_FLAGS
+- REVIEW REQUIRED: allergy, intolerance, avoided-food, or condition information is incomplete.
+
+### DRAFT_STATUS
+- A
+- I
+- -
+- G
+- E
+- N
+- E
+- R
+- A
+- T
+- E
+- D
+-  
+- —
+-  
+- D
+- O
+- C
+- T
+- O
+- R
+-  
+- R
+- E
+- V
+- I
+- E
+- W
+-  
+- R
+- E
+- Q
+- U
+- I
+- R
+- E
+- D
+
+--- RAG EVIDENCE ---
+
+SOURCE 1
+Book: Charaka-Samhita-Acharya-Charaka (1).pdf
+Page: 11
+Author: Connie Reavis
+12 
+ 
+Definitions and Theory 
+ 
+Physician 
+Ayurveda 
+Happy life 
+Healthy person 
+The 8 Branches of Ayurveda 
+Similarity and Dissimilarity 
+*Substances 
+Supreme Self 
+“Paradi”- means of success in treatment
+
+SOURCE 2
+Book: Sushruta Samhita 1.pdf
+Page: 288
+Author: Susruta
+Chap. XX.] SUTRASTHANAM. 185
+Chilli, the V^stuka, the Sunishannaka the Jivanti, the
+Tanduliyaka, and the Mandukaparni, etc. Clarified-
+butter, the salt known as the Saindhava, and the
+luscious juice of the pomegranate and the Amalakam,
+should be generally deemed the most wholesome articles
+of food.
+Similarly, the practise of self-control, residence in a
+room protected from the strong gusts of wind, sleeping
+only at night, tepid water,and moderate physical exercise
+should be regarded as absolutel
+
+SOURCE 3
+Book: astanga-hridaya-sutrasthan-handbook.pdf
+Page: 178
+Author: 
+Astanga Hridaya Sutrasthan 
+Page No. 179               Astanga Hridaya Sutrasthan 
+keeping awake at night, 
+Exercises of different kinds, 
+Worry, 
+Dry massage of the body; 
+Vamana – emesis therapy, 
+drinking of soups- of grains 
+Use of honey, 
+Therapies and medicines that reduce fat, 
+Inhalation of medicinal smoke, 
+Fasting, 
+Gargling 
+Facing difficulties 10-12 
+ 
+उप मः पृथ दोषान् यो अयमु   य क  त तः 
+संसग सि नपातेषु त यथा वं  वक पयेत ्  
+ 
+The different treatment prescribed for each Dosha indiv
+
+SOURCE 4
+Book: Sushruta Samhita 1.pdf
+Page: 14
+Author: Susruta
+Ill "^ ,
+the reproductive activity oftlfe body in certaiR)*instances.
+would appear to be the more correct description. In
+cases like this we h'ave not put before our readers,
+any suggestions of our own, but left them free to
+draw their own inference. And for this purpose we
+further intend to Append to the last volume of this
+work an index a,nd a glossary illustrating the possible
+meanings of the Ayurvedic terms with English and
+Latin synonyms, wherever possible. The true meaning
+of the Ayurveda 
+
+SOURCE 5
+Book: astanga-hridaya-sutrasthan-handbook.pdf
+Page: 231
+Author: 
+Astanga Hridaya Sutrasthan 
+Page No. 232               Astanga Hridaya Sutrasthan 
+संशोधना  व ाव नेहयोजनल घनैः  
+या यि नम  दतां त मा   मं पेया दमाचरेत ्  
+ 
+The digestive activity becomes weak by purification therapies, blood letting, oleation and fasting; 
+hence the regimen of Peya- thin Gruel etc. should be followed. 45b-46a 
+ 
+ ुता य प त ले माणं म यपं वातपैि तकम ् 
+पेयां न् पायये तेषां तप णा द मो  हतः   
+ 
+Peya should not be given when only little quantities of Pitta and Kapha are expelled ou
+
+==============================
+AYURGENIX — AGENT 2
+PERSONALIZED DIET PLAN
+==============================
+
+Status: needs_review
+
+NUTRITION TARGET
+Calories: 1772.4
+Protein: 66.0 g
+Carbs: 266.3 g
+Fat: 49.2 g
+Fiber: 30 g
+
+MEAL PLAN
+
+BREAKFAST
+Target: 443.1 kcal
+Actual: 445.2 kcal
+Difference: 2.1 kcal
+ - Dosa | 265 g | 445.2 kcal | Score: 2
+
+LUNCH
+Target: 620.3 kcal
+Actual: 635.5 kcal
+Difference: 15.2 kcal
+ - Rice with Dal Tadka | 250 g | 325.0 kcal | Score: 9
+ - Vegetable Sambar | 345 g | 310.5 kcal | Score: 9
+
+SNACK
+Target: 177.2 kcal
+Actual: 182.0 kcal
+Difference: 4.8 kcal
+ - Coconut Date Balls | 65 g | 182.0 kcal | Score: 9
+
+DINNER
+Target: 531.7 kcal
+Actual: 590.5 kcal
+Difference: 58.8 kcal
+ - Rice with Dal Tadka | 250 g | 325.0 kcal | Score: 9
+ - Vegetable Sambar | 295 g | 265.5 kcal | Score: 9
+
+VALIDATION
+Overall valid: False
+
+EXCLUDED FOODS
+Total excluded: 20
+
+==============================
+FINAL PORTION PLAN
+==============================
+
+BREAKFAST
+Target calories: 443.1
+ - Idli | Portion: 150 g | Calories: 219.0
+ - Millet Khichdi | Portion: 150 g | Calories: 232.5
+
+LUNCH
+Target calories: 620.3
+ - Khichdi with Ghee | Portion: 250 g | Calories: 362.5
+ - Rice with Dal Tadka | Portion: 250 g | Calories: 325.0
+
+SNACK
+Target calories: 177.2
+ - Mung Bean Soup | Portion: 200 g | Calories: 200.0
+
+DINNER
+Target calories: 531.7
+ - Khichdi with Ghee | Portion: 250 g | Calories: 362.5
+ - Lentil Soup with Ginger | Portion: 295 g | Calories: 265.5

@@ -23,6 +23,15 @@ def score_prakriti(answers: Dict[int, str]) -> dict:
     Each selected Dosha receives +1.
     """
 
+    expected_ids = set(range(1, 22))
+    received_ids = set(answers)
+    if received_ids != expected_ids:
+        raise ValueError(
+            "Please provide answers for all 21 Prakriti questions. "
+            f"Missing: {sorted(expected_ids - received_ids)}; "
+            f"extra: {sorted(received_ids - expected_ids)}."
+        )
+
     scores = {dosha: 0 for dosha in DOSHAS}
 
     for question_id, selected_dosha in answers.items():
@@ -324,12 +333,15 @@ def score_agni(answers: dict[str, int]) -> dict:
 
     response_scores = {}
 
+    tikshnagni_ids = expected_ids - {"A8"}
+
     for question_id, score in answers.items():
 
-        if score not in {1, 2, 3, 4}:
+        allowed_scores = {1, 2, 3, 4} if question_id in tikshnagni_ids else {1, 2, 3}
+        if score not in allowed_scores:
             raise ValueError(
                 f"Invalid score for {question_id}: {score}. "
-                "Agni scores must be 1, 2, 3, or 4."
+                f"Allowed scores are {sorted(allowed_scores)}."
             )
 
         response_scores[question_id] = score

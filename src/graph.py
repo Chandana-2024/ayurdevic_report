@@ -21,6 +21,11 @@ from src.agents.disease_screening_agent import disease_screening_agent
 # ============================================================
 
 class DietPlanningState(TypedDict, total=False):
+    session_id: str
+    patient_id: str
+    assessment_report: dict[str, Any]
+    assessment_pdf_path: str
+    workflow_status: str
     # --------------------------------------------------------
     # User input
     # --------------------------------------------------------
@@ -223,6 +228,19 @@ def route_after_safety(
 builder = StateGraph(DietPlanningState)
 
 
+def assessment_report_node(state):
+    from src.services.report_workflow import TwoReportWorkflow
+    from src.services.two_report_pdf import TwoReportPDFGenerator
+    working = dict(state)
+    flow = TwoReportWorkflow(working)
+    path = TwoReportPDFGenerator().generate_assessment_report(working, f"AI_Assessment_Report_{flow.session_id}.pdf")
+    return {"session_id": flow.session_id, "patient_id": working["patient_id"], "assessment_report": working["assessment_report"],
+            "assessment_pdf_path": path, "workflow_status": working["workflow_status"]}
+
+
+builder.add_node("assessment_report", assessment_report_node)
+
+
 # ------------------------------------------------------------
 # Add nodes
 # ------------------------------------------------------------
@@ -347,8 +365,9 @@ builder.add_edge(
 
 builder.add_edge(
     "agni_agent",
-    "nutrition_agent",
+    "assessment_report",
 )
+builder.add_edge("assessment_report", "nutrition_agent")
 
 builder.add_edge(
     "nutrition_agent",

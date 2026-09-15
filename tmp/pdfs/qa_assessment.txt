@@ -1,0 +1,77 @@
+VedAmrit | English-only AI-assisted wellness workflow
+AI ASSESSMENT REPORT
+Page 1
+ VedAmrit
+ AI ASSESSMENT REPORT
+Report status
+AI_ASSESSMENT_GENERATED
+Report 6d63e262-29d7-497c-9967-f09623f92a51 | Version 1 | Created 2026-09-15T08:54:26.583386+00:00
+PRELIMINARY AI ASSESSMENT — NOT DOCTOR APPROVED
+Doctor review is required before personalized recommendations are finalized.
+2. Patient Profile
+Field
+Information
+Name
+SYNTHETIC QA FIXTURE - NOT A PATIENT
+Patient Id
+Not provided
+Age
+Not provided
+Gender
+Not provided
+Height Cm
+Not provided
+Weight Kg
+Not provided
+Dietary Preference
+Not provided
+3. Pre-consultation Summary
+Item
+Patient-provided information
+Main Complaint
+Not provided
+Symptoms
+Not provided
+Symptom Duration
+Not provided
+Symptom Frequency
+Not provided
+Symptom Severity
+Not provided
+Triggers
+Not provided
+Previous Treatment
+Not provided
+Goal
+Not provided
+4. Prakriti Assessment
+Vata
+5. Vikriti Assessment
+Vata
+6. Agni / Digestion Assessment
+Vishamagni
+7. SYMPTOM-BASED DISEASE SCREENING
+SCREENING / RESEARCH ONLY — NOT A MEDICAL DIAGNOSIS
+Not provided
+
+VedAmrit | English-only AI-assisted wellness workflow
+AI ASSESSMENT REPORT
+Page 2
+8. Assessment Scoring Summary
+Assessment
+Recorded scores
+Prakriti
+Vata: 21
+Vikriti
+Vata: 10
+Agni / Digestion
+Vishamagni: 10
+9. Assessment Limitations
+- AI-generated preliminary assessment based on supplied information.
+- SYMPTOM-BASED DISEASE SCREENING is screening/research only, not a medical diagnosis.
+- Doctor review is required before personalized recommendations are finalized.
+10. AI Assessment Status
+AI-GENERATED — DOCTOR REVIEW REQUIRED
+11. Safety Disclaimer
+This preliminary assessment is educational and supportive only. It is not diagnosis, treatment, a prescription, or a substitute for a qualified
+doctor.

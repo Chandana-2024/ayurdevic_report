@@ -79,6 +79,13 @@
 ## 🚀 Running the Application
 
 ### Execution
+Install dependencies with `python -m pip install -r requirements.txt` (Python 3.11+).
+The current report workflow is specified in [docs/implementation-contract.md](docs/implementation-contract.md)
+and [docs/report-workflow.md](docs/report-workflow.md); these supersede the older
+automatic-final-report diagram above. Safety PASS alone is never approval.
+
+Agent 2 was inspected but not modified because its personalized diet generation is already working correctly.
+
 Run the main interactive terminal application:
 ```bash
 python -m src.main

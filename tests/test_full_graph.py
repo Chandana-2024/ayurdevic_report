@@ -181,10 +181,12 @@ from src.services.pdf_report import AyurGenixPDFReport
 
 pdf_generator = AyurGenixPDFReport()
 
-pdf_path = pdf_generator.generate(
-    result,
-    filename="AyurGenix_Wellness_Report.pdf"
-)
+try:
+    pdf_generator.generate(result, filename="AyurGenix_Wellness_Report.pdf")
+except PermissionError:
+    pdf_path = result["assessment_pdf_path"]
+else:
+    raise AssertionError("Legacy PDF export must require explicit doctor approval")
 
 print("\n" + "=" * 60)
 print("PDF REPORT GENERATED")

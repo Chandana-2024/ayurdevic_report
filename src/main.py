@@ -1,5 +1,6 @@
 import pickle
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,8 @@ from src.questions import (
     VIKRITI_QUESTIONS,
 )
 from src.services.pdf_report import VedAmritPDFReport
+from src.services.two_report_pdf import TwoReportPDFGenerator
+from src.services.report_workflow import TwoReportWorkflow
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -71,32 +74,11 @@ def _safe_print(text: str) -> None:
         print(safe_text)
 
 def choose_language() -> str:
-    """
-    Ask the user to choose English or Hindi.
-
-    Returns:
-        "en" for English
-        "hi" for Hindi
-    """
+    """Return the only supported report language."""
     print("\n" + "=" * 60)
-    print("VEDAMRIT - LANGUAGE / भाषा")
+    print("VEDAMRIT - ENGLISH WORKFLOW")
     print("=" * 60)
-
-    print("1. English")
-    print("2. हिंदी")
-
-    while True:
-        choice = input(
-            "Choose language / भाषा चुनें (1 or 2): "
-        ).strip()
-
-        if choice == "1":
-            return "en"
-
-        if choice == "2":
-            return "hi"
-
-        print("Invalid choice. Please enter 1 or 2.")
+    return "en"
 
 
 
@@ -110,8 +92,7 @@ def get_patient_profile() -> dict[str, Any]:
     print("PATIENT PROFILE")
     print("=" * 60)
 
-    print("Please provide your accurate information.")
-    print("कृपया अपनी सही जानकारी दर्ज करें।\n")
+    print("Please provide your accurate information.\n")
 
     while True:
         name = input("Enter your Full Name: ").strip()
@@ -309,14 +290,12 @@ def get_prakriti_answers(language: str) -> dict[int, str]:
 
     for question in PRAKRITI_QUESTIONS:
         print(f"{question['id']}. {question['text']}")
-        print(f"   हिंदी: {question['text_hi']}")
 
         for index, option in enumerate(
             question["options"],
             start=1,
         ):
             print(f"   {index}. {option['text']}")
-            print(f"      हिंदी: {option['text_hi']}")
 
         while True:
             choice = input(
@@ -370,11 +349,9 @@ def get_vikriti_answers(language: str) -> dict[str, int]:
 
     for question in VIKRITI_QUESTIONS:
         print(f"{question['id']}. {question['text']}")
-        print(f"   हिंदी: {question['text_hi']}")
 
         for option_number, option in question["options"].items():
             print(f"   {option_number}. {option['text']}")
-            print(f"      हिंदी: {option['text_hi']}")
 
         while True:
             choice = input(
@@ -422,7 +399,6 @@ def get_agni_answers(language: str) -> dict[str, int]:
 
     for question in AGNI_QUESTIONS:
         print(f"{question['id']}. {question['question']}")
-        print(f"   हिंदी: {question['question_hi']}")
 
         display_options = [
             option
@@ -435,7 +411,6 @@ def get_agni_answers(language: str) -> dict[str, int]:
             start=1,
         ):
             print(f"   {index}. {option['text']}")
-            print(f"      हिंदी: {option['text_hi']}")
 
         while True:
             choice = input(
@@ -587,13 +562,54 @@ def get_disease_screening_answers() -> dict[str, int] | None:
     return symptoms
 
 
+def get_doctor_review(state=None) -> dict[str, Any]:
+    """Collect only doctor-entered review content; blank entries remain Not provided."""
+    print("\nDOCTOR REVIEW (optional; all AI content remains unapproved until confirmed)")
+    if input("Is a qualified doctor reviewing this report now? (yes/no): ").strip().lower() not in {"y", "yes"}:
+        return {}
+
+    def entry(label: str) -> str | None:
+        value = input(f"{label} (leave blank if not provided): ").strip()
+        return value or None
+
+    review = {
+        "qualified_reviewer": True,
+        "doctor_name": entry("Doctor name"),
+        "registration_number": entry("Registration number"),
+        "qualification": entry("Qualification"),
+        "contact_information": entry("Contact information"),
+        "observations": entry("Clinical observations"),
+        "confirmed_symptoms": entry("Doctor-confirmed symptoms"),
+        "confirmed_prakriti": entry("Doctor-confirmed Prakriti"),
+        "confirmed_vikriti": entry("Doctor-confirmed Vikriti"),
+        "confirmed_agni": entry("Doctor-confirmed Agni"),
+        "assessment": entry("Doctor assessment"),
+        "comments": entry("Doctor comments"),
+        "wellness_advice": entry("Doctor-approved wellness advice"),
+        "food_restrictions": entry("Additional doctor restrictions"),
+        "follow_up_date": entry("Follow-up date"),
+        "follow_up_instructions": entry("Follow-up instructions / progress monitoring"),
+        "final_comments": entry("Final comments"),
+        "signature": entry("Doctor signature / sign-off name"),
+    }
+    review["edited_diet_plan"] = None
+    review["edited_lifestyle_recommendations"] = None
+    review["progress_monitoring"] = entry("Progress-monitoring instructions")
+    from src.services.doctor_console import review_content
+    review = review_content(state if state is not None else {}, review)
+    return review
+
+
 def main() -> None:
     try:
-        # STEP 1: Choose language
+            # STEP 1: Use the English-only workflow
         language = choose_language()
 
         # STEP 2: Collect real patient profile
         patient_profile = get_patient_profile()
+        for field in ("activity_level", "sleep_information", "stress_level", "food_intolerances", "medicine_allergies", "medication_restrictions", "pregnancy_information", "significant_dietary_restrictions", "season"):
+            value = input(f"{field.replace('_', ' ').title()} (blank means unknown; use none/not applicable only if confirmed): ").strip()
+            patient_profile[field] = value or None
 
         # STEP 3: Collect 21 Prakriti answers
         prakriti_answers = get_prakriti_answers(language)
@@ -635,6 +651,35 @@ def main() -> None:
 
         # STEP 9: Invoke LangGraph workflow
         result = graph.invoke(initial_state)
+        result["generated_date"] = str(date.today())
+        result["last_updated_date"] = str(date.today())
+        # Report 1 intentionally contains only Agent 1's preliminary assessment.
+        report_workflow = TwoReportWorkflow(result)
+        report_generator = TwoReportPDFGenerator()
+        report1_path = report_generator.generate_assessment_report(
+            result,
+            filename=f"AI_Assessment_Report_{report_workflow.session_id}.pdf",
+        )
+        print(f"\nAI Assessment Report generated for doctor review:\n{Path(report1_path).resolve()}")
+
+        report_workflow.register_agent3_draft()
+        report_workflow.begin_doctor_review()
+        doctor_review = get_doctor_review(result)
+        result["doctor_review"] = doctor_review
+        if doctor_review.get("approved"):
+            try:
+                report_workflow.approve(doctor_review)
+                report2_path = report_generator.generate_final_report(
+                    result,
+                    filename=f"Final_Personalized_Wellness_Report_{report_workflow.session_id}.pdf",
+                )
+                print(f"\nDoctor-approved final report generated:\n{Path(report2_path).resolve()}")
+            except (ValueError, PermissionError) as error:
+                report_workflow.request_changes()
+                print(f"\nDOCTOR VERIFICATION REQUIRED: {error}")
+        else:
+            report_workflow.request_changes()
+            print("\nDOCTOR VERIFICATION REQUIRED - Report 2 was not generated.")
 
         # STEP 10: Display final response
         print("\n" + "=" * 60)
@@ -651,29 +696,21 @@ def main() -> None:
             "No final response generated.",
         )
 
-        _safe_print(final_response_text)
+        if report_workflow.approval_is_current():
+            print("DOCTOR APPROVED - use the final reviewed PDF above.")
+        else:
+            print("DOCTOR VERIFICATION REQUIRED")
+        from src.services.doctor_console import save_session
+        print(f"Session saved: {save_session(result).resolve()}")
 
         print("=" * 60)
 
-        # STEP 11: Generate PDF report
-        pdf_generator = VedAmritPDFReport()
-
-        pdf_path = pdf_generator.generate(
-            result,
-            filename="VedAmrit_Wellness_Report.pdf",
-        )
-
-        absolute_pdf_path = str(
-            Path(pdf_path).resolve()
-        )
-
-        # STEP 12: Display PDF location
+        # STEP 11: Display two-report workflow result.
         print("\n" + "=" * 50)
         print("VedAmrit completed successfully")
         print("=" * 50)
 
-        print("\nPDF generated:")
-        print(absolute_pdf_path)
+        print("\nReport 1 is always generated first. Report 2 requires explicit doctor approval.")
         print()
 
     except FileNotFoundError as error:

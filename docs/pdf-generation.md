@@ -1,0 +1,5 @@
+# PDF Generation
+
+PDFs are English-only A4 documents. The requested VedAmrit reference was not available in the workspace; visual fidelity to it remains unverified. The implementation follows the requested light pastel headers, tables, warning placement and doctor-friendly presentation. References must never supply patient data. PDFs use clean margins, page numbers, headers/footers, repeated table headings, safe table page breaks, status labels, and no duplicate content.
+
+The implementation generates separate files for the AI Assessment Report and Final Personalized Wellness Report. Report 1 has a preliminary status. Report 2 can only be exported with doctor-approved status; an unsuccessful export request displays DOCTOR VERIFICATION REQUIRED in the application. PDF output is rendered and visually checked for clipped or overlapping content before release. The latest synthetic QA set contains two assessment pages and four final-report pages; all six were visually inspected. Section headings stay with their content and long tables repeat headings across page breaks.
