@@ -15,7 +15,9 @@ class LifestylePersonalizationTests(unittest.TestCase):
         result = lifestyle_agent(state)["lifestyle_plan"]
         recommendation = result["recommendations"][0]
         self.assertEqual(recommendation["ai_generated_status"], "AI-GENERATED — DOCTOR REVIEW REQUIRED")
-        self.assertIn("agni", result["personalization_factors"])
+        self.assertIn("agni", retrieve.call_args.kwargs["patient_context"])
+        self.assertNotIn("personalization_factors", result)
+        self.assertNotIn("factors_used", recommendation)
         self.assertIn("patient_specific_reason", recommendation)
         self.assertIn("safety_consideration", recommendation)
         self.assertIn("Ayurvedic", recommendation["ayurvedic_basis"]["support"])

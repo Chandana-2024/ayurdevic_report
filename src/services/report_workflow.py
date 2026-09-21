@@ -7,12 +7,12 @@ import json
 from typing import Any
 from uuid import uuid4
 
-from src.services.report_models import ReportMetadata, ReportType, WorkflowStatus, utc_now
+from src.services.report_models import DoctorDecision, ReportMetadata, ReportType, WorkflowStatus, utc_now
 from src.services.report_validation import validate_report_state
 
 
-APPROVAL_FIELDS = ("qualified_reviewer", "doctor_name", "registration_number", "signature", "approved")
-PATIENT_FIELDS = ("name", "patient_id", "id", "age", "gender", "sex", "height_cm", "weight_kg", "dietary_preference", "allergies", "medicine_allergies", "food_intolerances", "foods_to_avoid", "health_conditions", "medication_restrictions", "pregnancy_information", "significant_dietary_restrictions", "main_complaint", "symptoms", "symptom_duration", "symptom_frequency", "symptom_severity", "triggers", "previous_treatment", "goal", "activity_level", "sleep_information", "sleep_quality", "stress_level", "season")
+APPROVAL_FIELDS = ("qualified_reviewer", "doctor_name", "registration_number", "qualification", "clinic", "signature", "approved")
+PATIENT_FIELDS = ("name", "patient_id", "id", "age", "gender", "sex", "height_cm", "weight_kg", "dietary_preference", "allergies", "medicine_allergies", "food_intolerances", "foods_to_avoid", "health_conditions", "medication_restrictions", "pregnancy_information", "significant_dietary_restrictions", "main_complaint", "symptoms", "symptom_duration", "symptom_frequency", "symptom_severity", "triggers", "previous_treatment", "goal", "activity_level", "sleep_information", "sleep_quality", "stress_level", "current_medicines", "doctor_restrictions", "allergy_reactions", "digestion", "appetite", "goal_details", "dietary_preference_details")
 
 
 def _patient_id(state: dict[str, Any]) -> str:
@@ -32,7 +32,7 @@ def _content_hash(content: dict[str, Any]) -> str:
 
 def assessment_data(state: dict[str, Any]) -> dict[str, Any]:
     """The only content eligible for Report 1."""
-    raw = {**(state.get("user_input") or {}), **(state.get("patient_profile") or {})}
+    raw = state.get("patient_profile") or state.get("user_input") or {}
     profile = {key: deepcopy(raw[key]) for key in PATIENT_FIELDS if key in raw}
     return {
         "patient_profile": profile,
@@ -69,7 +69,9 @@ def final_content(state: dict[str, Any]) -> dict[str, Any]:
     doctor.pop("edited_diet_plan", None)
     edited_lifestyle = doctor.pop("edited_lifestyle_recommendations", None)
     return {
-        "patient_profile": deepcopy({**(state.get("user_input") or {}), **(state.get("patient_profile") or {})}),
+        "patient_profile": deepcopy({key: value for key, value in
+                                    (state.get("patient_profile") or state.get("user_input") or {}).items()
+                                    if key in PATIENT_FIELDS}),
         "assessment": {
             "prakriti": doctor.get("confirmed_prakriti") or deepcopy(state.get("prakriti_result") or {}),
             "vikriti": doctor.get("confirmed_vikriti") or deepcopy(state.get("vikriti_result") or {}),
@@ -106,35 +108,67 @@ class TwoReportWorkflow:
             metadata.created_at = previous["metadata"]["created_at"]
         report = {"metadata": metadata.as_dict(), "assessment_data": data}
         self.state["assessment_report"] = report
-        self.state["workflow_status"] = WorkflowStatus.AI_ASSESSMENT_GENERATED.value
+        if self.state.get("workflow_status") != WorkflowStatus.REJECTED.value:
+            self.state["workflow_status"] = WorkflowStatus.AI_ASSESSMENT_GENERATED.value
         return report
 
     def register_agent3_draft(self) -> None:
-        self.state["workflow_status"] = WorkflowStatus.AGENT_3_RECOMMENDATIONS_GENERATED.value
+        self.begin_doctor_review()
+
+    def _ensure_open(self) -> None:
+        if (self.state.get("workflow_status") == WorkflowStatus.REJECTED.value
+                or (self.state.get("doctor_review") or {}).get("decision") == DoctorDecision.REJECT):
+            raise PermissionError("This workflow run was rejected and is closed.")
 
     def begin_doctor_review(self) -> None:
-        self.state["workflow_status"] = WorkflowStatus.UNDER_DOCTOR_REVIEW.value
+        self._ensure_open()
+        self.state["review_validation"] = validate_report_state(self.state)
+        self.state["workflow_status"] = WorkflowStatus.PENDING_DOCTOR_REVIEW.value
 
-    def request_changes(self) -> None:
-        self.state.setdefault("doctor_review", {})["approved"] = False
+    def request_changes(self, doctor_review: dict[str, Any] | None = None) -> None:
+        self._ensure_open()
+        review = deepcopy(doctor_review if doctor_review is not None else self.state.get("doctor_review") or {})
+        review.update(decision=DoctorDecision.REQUEST_CHANGES.value, approved=False, review_datetime=utc_now())
+        self.state["doctor_review"] = review
         self.state["workflow_status"] = WorkflowStatus.CHANGES_REQUIRED.value
 
-    def reject(self) -> None:
-        self.request_changes()
-        self.state["doctor_review"]["decision"] = "REJECTED"
+    def reject(self, doctor_review: dict[str, Any] | None = None) -> None:
+        self._ensure_open()
+        review = deepcopy(doctor_review if doctor_review is not None else self.state.get("doctor_review") or {})
+        review.update(decision=DoctorDecision.REJECT.value, approved=False, review_datetime=utc_now())
+        self.state["doctor_review"] = review
+        self.state["workflow_status"] = WorkflowStatus.REJECTED.value
+
+    def record_decision(self, doctor_review: dict[str, Any]) -> None:
+        self._ensure_open()
+        decision = doctor_review.get("decision")
+        if decision not in {item.value for item in DoctorDecision}:
+            raise ValueError("Choose APPROVE, REQUEST_CHANGES, or REJECT explicitly.")
+        if decision == DoctorDecision.APPROVE:
+            self.approve(doctor_review)
+        elif decision == DoctorDecision.REQUEST_CHANGES:
+            self.request_changes(doctor_review)
+        else:
+            self.reject(doctor_review)
 
     def approve(self, doctor_review: dict[str, Any]) -> None:
+        self._ensure_open()
+        if doctor_review.get("decision") != DoctorDecision.APPROVE:
+            raise ValueError("Explicit decision == APPROVE is required.")
         missing = [key for key in APPROVAL_FIELDS if not doctor_review.get(key) or (isinstance(doctor_review.get(key), str) and not doctor_review[key].strip())]
         missing += [key for key in ("qualified_reviewer", "approved") if doctor_review.get(key) is not True]
         if missing:
             raise ValueError("Explicit doctor approval is incomplete: " + ", ".join(missing))
         if not self.state.get("assessment_report"):
             raise ValueError("Generate Report 1 before doctor approval.")
+        for medicine in doctor_review.get("medicines") or []:
+            if (not isinstance(medicine, dict) or medicine.get("source") != "DOCTOR_ENTERED"
+                    or not str(medicine.get("name") or "").strip()):
+                raise ValueError("Medicines must be named, explicitly doctor-entered review entries.")
+        doctor_review = deepcopy(doctor_review)
+        doctor_review["review_datetime"] = utc_now()
         approved_content = final_content({**self.state, "doctor_review": doctor_review})
-        if approved_content["validation"]["failed_checks"]:
-            raise ValueError("Resolve validation failures before approval: " + "; ".join(approved_content["validation"]["failed_checks"]))
-        if approved_content["validation"]["warnings"] and doctor_review.get("validation_reviewed") is not True:
-            raise ValueError("Explicit acknowledgement of validation warnings is required.")
+        self.state["review_validation"] = deepcopy(approved_content["validation"])
         version = int(self.state.get("final_report_version") or 1)
         previous = self.state.get("final_report")
         if previous:
@@ -155,7 +189,9 @@ class TwoReportWorkflow:
         doctor = self.state.get("doctor_review") or {}
         if self.state.get("workflow_status") not in {WorkflowStatus.DOCTOR_APPROVED.value, WorkflowStatus.FINALIZED.value, WorkflowStatus.SENT_TO_PATIENT.value}:
             return False
-        if doctor.get("approved") is not True or doctor.get("qualified_reviewer") is not True:
+        if doctor.get("decision") != DoctorDecision.APPROVE or doctor.get("approved") is not True or doctor.get("qualified_reviewer") is not True:
+            return False
+        if not self.state.get("approved_snapshot") or _content_hash(self.state["approved_snapshot"]) != doctor.get("approved_content_hash"):
             return False
         stored = self.state.get("final_report")
         if stored and stored["metadata"]["report_version"] == doctor.get("approved_report_version"):
@@ -187,7 +223,7 @@ class TwoReportWorkflow:
         if previous:
             metadata.report_id = previous["metadata"]["report_id"]
             metadata.created_at = previous["metadata"]["created_at"]
-        report = {"metadata": metadata.as_dict(), "final_approved_data": final_content(self.state)}
+        report = {"metadata": metadata.as_dict(), "final_approved_data": deepcopy(self.state["approved_snapshot"])}
         self.state["final_report"] = report
         self.state["workflow_status"] = WorkflowStatus.FINALIZED.value
         return deepcopy(report)

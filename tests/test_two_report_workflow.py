@@ -16,7 +16,7 @@ class TwoReportWorkflowTests(unittest.TestCase):
         }
 
     def _approval(self):
-        return {"qualified_reviewer": True, "doctor_name": "Dr Example", "registration_number": "REG-1", "signature": "Dr Example", "approved": True, "validation_reviewed": True}
+        return {"decision": "APPROVE", "qualification": "Physician", "clinic": "Test clinic", "qualified_reviewer": True, "doctor_name": "Dr Example", "registration_number": "REG-1", "signature": "Dr Example", "approved": True, "validation_reviewed": True}
 
     def test_assessment_report_has_no_diet_or_doctor_data(self):
         flow = TwoReportWorkflow(self._state())

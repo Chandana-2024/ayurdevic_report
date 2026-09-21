@@ -21,6 +21,20 @@ from src.agents.disease_screening_agent import disease_screening_agent
 # ============================================================
 
 class DietPlanningState(TypedDict, total=False):
+    """Common patient_state: one profile, stable assessment answers and results.
+
+    user_input and answers remain legacy input aliases; new callers use
+    patient_profile and questionnaire_answers. Agent/report snapshots remain
+    compatibility outputs, not independently editable patient records.
+    """
+    agent2_output: dict[str, Any]
+    diet_timetable: dict[str, Any]
+    doctor_review: dict[str, Any]
+    review_validation: dict[str, Any]
+    approved_snapshot: dict[str, Any]
+    final_report: dict[str, Any]
+    final_report_version: int
+    final_report_id: str
     session_id: str
     patient_id: str
     assessment_report: dict[str, Any]
@@ -239,6 +253,19 @@ def assessment_report_node(state):
 
 
 builder.add_node("assessment_report", assessment_report_node)
+from src.services.diet_presentation import diet_presentation_agent
+builder.add_node("diet_presentation", diet_presentation_agent)
+
+
+def pending_doctor_review_node(state):
+    from src.services.report_workflow import TwoReportWorkflow
+    working = dict(state)
+    TwoReportWorkflow(working).begin_doctor_review()
+    return {"review_validation": working["review_validation"],
+            "workflow_status": working["workflow_status"]}
+
+
+builder.add_node("pending_doctor_review", pending_doctor_review_node)
 
 
 # ------------------------------------------------------------
@@ -386,8 +413,9 @@ builder.add_edge(
 
 builder.add_edge(
     "diet_planning_agent",
-    "safety_fact_checker_agent",
+    "diet_presentation",
 )
+builder.add_edge("diet_presentation", "safety_fact_checker_agent")
 
 
 # ============================================================
@@ -415,13 +443,14 @@ builder.add_edge(
 
 builder.add_edge(
     "final_response",
-    END,
+    "pending_doctor_review",
 )
 
 builder.add_edge(
     "review_response",
-    END,
+    "pending_doctor_review",
 )
+builder.add_edge("pending_doctor_review", END)
 
 
 # ============================================================

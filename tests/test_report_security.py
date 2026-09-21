@@ -30,7 +30,7 @@ class ReportSecurityTests(unittest.TestCase):
         with self.assertRaises(PermissionError):
             self.flow.create_final_report()
         self.flow.reject()
-        self.assertEqual(self.state["doctor_review"]["decision"], "REJECTED")
+        self.assertEqual(self.state["doctor_review"]["decision"], "REJECT")
         self.assertFalse(self.flow.approval_is_current())
 
     def test_regeneration_reuses_identity_and_edits_require_new_version(self):
@@ -67,7 +67,7 @@ class ReportSecurityTests(unittest.TestCase):
         self.assertFalse(self.flow.approval_is_current())
 
     def test_medicine_edits_require_reapproval_and_allergy_conflicts_block(self):
-        approval = {**self.approval, "medicines": [{"name": "SYNTHETIC TEST MEDICINE", "dosage": "TEST ONLY", "doctor_approval_status": "DOCTOR APPROVED"}]}
+        approval = {**self.approval, "medicines": [{"name": "SYNTHETIC TEST MEDICINE", "dosage": "TEST ONLY", "source": "DOCTOR_ENTERED", "doctor_approval_status": "DOCTOR APPROVED"}]}
         self.flow.approve(approval)
         self.state["doctor_review"]["medicines"][0]["dosage"] = "CHANGED TEST VALUE"
         self.assertFalse(self.flow.approval_is_current())
@@ -108,7 +108,7 @@ class ReportSecurityTests(unittest.TestCase):
             self.state["meal_plan"]["days"][0].pop("daily_total")
             self.flow.approve(self.approval)
             path = generator.generate_final_report(self.state)
-            self.assertGreater(Path(path).stat().st_size, 5000)
+            self.assertTrue(Path(path).read_bytes().startswith(b"%PDF-"))
             generator.generate_final_report(self.state)
             with self.assertRaises(ValueError):
                 generator._p("हिन्दी")

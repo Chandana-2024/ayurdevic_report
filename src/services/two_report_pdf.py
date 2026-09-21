@@ -81,44 +81,5 @@ class TwoReportPDFGenerator:
         return self._build(self.output_dir / filename, "AI ASSESSMENT REPORT", "AI_ASSESSMENT_GENERATED", story)
 
     def generate_final_report(self, state: dict[str, Any], filename: str = "Final_Personalized_Wellness_Report.pdf") -> str:
-        workflow = TwoReportWorkflow(state)
-        if not workflow.approval_is_current():
-            workflow.invalidate_if_changed()
-            raise PermissionError("DOCTOR VERIFICATION REQUIRED")
-        from src.services.report_workflow import final_content
-        data = final_content(state); profile, assessment, doctor = data["patient_profile"], data["assessment"], data["doctor_review_data"]
-        story: list[Any] = [Paragraph("DOCTOR APPROVED", self.section), Paragraph("2. Patient Profile", self.section), self._table([[self._p("Field"), self._p("Information")], *[[self._p(k.replace("_", " ").title()), self._p(self._list(profile.get(k)))] for k in ("name", "age", "gender", "height_cm", "weight_kg")]], [55*mm, 131*mm])]
-        story += [Paragraph("3. Relevant Pre-consultation Summary", self.section), self._p(self._list({k: profile.get(k) for k in ("goal", "main_complaint", "health_conditions")}))]
-        reviewed_rows = [[self._p("Assessment"), self._p("Doctor-reviewed result")]]
-        for key, value in assessment.items():
-            if isinstance(value, dict):
-                value = value.get("constitution") or value.get("dominant_dosha") or value.get("status") or value.get("primary_dosha") or "Not provided"
-            reviewed_rows.append([self._p(key.replace("_", " ").title()), self._p(self._list(value))])
-        story += [Paragraph("4. Doctor-reviewed Assessment", self.section), self._table(reviewed_rows, [55*mm, 131*mm])]
-
-        diet_payload = data["agent2_diet_data"]; diet = diet_payload.get("diet_plan", diet_payload) if isinstance(diet_payload, dict) else {}
-        validation = data["validation"]
-        excluded = diet_payload.get("excluded_foods", []) if isinstance(diet_payload, dict) else []
-        story += [Paragraph("5. Personalized Nutrition Analysis", self.section), self._p("NUTRITION REVIEW REQUIRED" if validation["warnings"] or validation["failed_checks"] else "Nutrition values were recalculated from displayed Agent 2 food items."), self._p("Full-plan totals: " + self._list(validation.get("nutrition_total"))), self._p("Weekly totals: " + self._list(validation.get("weekly_totals"))), self._p("Target versus actual: " + self._list(validation.get("target_versus_actual"))), Paragraph("6. Food Preferences, Allergies and Restrictions", self.section), self._p(f"Dietary preference: {profile.get('dietary_preference') or 'Not provided'} | Allergies: {self._list(profile.get('allergies'))} | Intolerances: {self._list(profile.get('food_intolerances'))} | Avoided foods: {self._list(profile.get('foods_to_avoid'))} | Doctor restrictions: {self._list(doctor.get('food_restrictions'))}"), Paragraph("7. Foods to Prioritize", self.section), self._p(self._list((diet_payload.get("priority_foods") if isinstance(diet_payload, dict) else None) or "Not provided")), Paragraph("8. Foods to Avoid or Limit", self.section), self._p(self._list(excluded or profile.get("foods_to_avoid") or "Not provided")), Paragraph("9. Personalized Diet Plan from Agent 2", self.section)]
-        for day in diet.get("days", []):
-            rows = [[self._p("Meal"), self._p("Food / portion"), self._p("Nutrition")]]
-            for meal in day.get("meals", []):
-                for food in meal.get("foods", []):
-                    rows.append([self._p(meal.get("meal")), self._p(f"{food.get('food_name', food.get('name', 'Not provided'))} ({food.get('portion_g', food.get('portion', 'Not provided'))} g)"), self._p(self._list({k: food.get("nutrition", food).get(k, "Not provided") for k in ("calories", "protein_g", "carbs_g", "fat_g", "fiber_g")}))])
-            story.extend([Paragraph(f"Day {day.get('day', 'Not provided')}", self.section), self._table(rows, [32*mm, 72*mm, 82*mm])])
-        story += [Paragraph("10. Daily Nutrition Summary", self.section), self._table([[self._p("Day"), self._p("Calculated daily nutrition")], *[[self._p(d.get("day")), self._p(self._list(d.get("daily_total")))] for d in diet.get("days", [])]], [25*mm, 161*mm]), Paragraph("11. Personalized Lifestyle and Wellness Advice from Agent 3", self.section)]
-        lifestyle = data["agent3_lifestyle_data"].get("recommendations", data["agent3_lifestyle_data"].get("lifestyle_plan", {}).get("recommendations", [])) if isinstance(data["agent3_lifestyle_data"], dict) else []
-        if not lifestyle:
-            story.append(self._p("Not provided"))
-        for item in lifestyle:
-            story.append(self._table([[self._p("DOCTOR APPROVED (AI-generated origin)"), self._p(item.get("category"))], [self._p("Recommendation"), self._p(item.get("personalized_recommendation"))], [self._p("Patient-specific reason"), self._p(item.get("patient_specific_reason"))], [self._p("Factors / Ayurvedic basis"), self._p(self._list(item.get("factors_used")) + " | " + self._list({k: v for k, v in (item.get("ayurvedic_basis") or {}).items() if k != "excerpt"}))], [self._p("Safety / wellness basis"), self._p(self._list(item.get("safety_consideration")) + " | " + self._list(item.get("wellness_basis")))]], [55*mm, 131*mm], header=False))
-        medicines = doctor.get("medicines") or []
-        story += [Paragraph("12. Doctor-approved Wellness Advice", self.section), self._p(doctor.get("wellness_advice")), Paragraph("13. Medicines and Prescriptions", self.section)]
-        medicine_rows = [[self._p("Medicine"), self._p("Dosage"), self._p("Frequency"), self._p("Duration"), self._p("Instructions")]] + [[self._p(m.get("name")), self._p(m.get("dosage")), self._p(m.get("frequency")), self._p(m.get("duration")), self._p(self._list(m.get("instructions")) + " | DOCTOR APPROVED")] for m in medicines]
-        if not medicines: medicine_rows.append([self._p("Not provided"), self._p("Not provided"), self._p("Not provided"), self._p("Not provided"), self._p("Doctor entry or approval required")])
-        story += [self._table(medicine_rows, [32*mm, 28*mm, 29*mm, 28*mm, 69*mm]), Paragraph("14. Follow-up Plan", self.section), self._table([[self._p("Follow-up date"), self._p(doctor.get("follow_up_date"))], [self._p("Instructions / progress monitoring"), self._p(self._list(doctor.get("follow_up_instructions")) + " | Progress monitoring: " + self._list(doctor.get("progress_monitoring")))]], [55*mm, 131*mm], header=False), Paragraph("15. Safety and Fact-check Review", self.section), self._p(self._list((validation.get("failed_checks", []) + validation.get("warnings", [])) or ["PASS"])), Paragraph("16. References / Evidence", self.section), self._p("Source dataset: " + str(state.get("food_dataset_path") or "data/demo_foods.csv")), self._p("Lifestyle references: " + self._list([{k: v for k, v in (item.get("ayurvedic_basis") or {}).items() if k in ("source", "page")} for item in lifestyle])), Paragraph("17. Educational Disclaimer", self.section), self._p("Traditional Ayurvedic wellness education is not a diagnosis, prescription, disease treatment, cure, prevention promise or guarantee. Follow the reviewing doctor instructions and seek qualified care for severe symptoms."), Paragraph("18. Doctor Approval and Signature", self.section), self._table([[self._p("Doctor"), self._p(doctor.get("doctor_name"))], [self._p("Registration / qualification"), self._p(f"{doctor.get('registration_number') or 'Not provided'} / {doctor.get('qualification') or 'Not provided'}")], [self._p("Approval date / sign-off"), self._p(f"{doctor.get('approval_date') or 'Not provided'} / {doctor.get('signature') or 'Not provided'}")]], [55*mm, 131*mm], header=False)]
-        story.insert(0, self._p(f"Report {state['final_report_id']} | Session {state['session_id']} | Approved version {doctor['approved_report_version']} | Approval date {doctor['approval_date']}"))
-        story += [Paragraph("Doctor Final Comments", self.section), self._p(doctor.get("final_comments")), self._p("Doctor contact: " + self._list(doctor.get("contact_information")))]
-        path = self._build(self.output_dir / filename, "FINAL PERSONALIZED WELLNESS REPORT", "DOCTOR APPROVED", story)
-        workflow.create_final_report()
-        return path
+        from src.services.final_report import generate_report_2
+        return generate_report_2(self, state, filename)

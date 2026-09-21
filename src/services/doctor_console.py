@@ -23,26 +23,42 @@ def review_content(state, review):
             except (ValueError, TypeError) as error:
                 print(f"Invalid edit: {error}")
 
-    state["patient_profile"] = edit("patient profile", state.get("patient_profile") or {})
+    print("\nPatient information (original questionnaire):")
+    for key, value in (state.get("patient_profile") or {}).items():
+        if key not in {"season", "current_season", "seasonal_guidance"}:
+            print(f"{key.replace('_', ' ').title()}: {value}")
     for key in ("prakriti_result", "vikriti_result", "agni_result"):
-        state[key] = edit(key, state.get(key) or {})
+        print(f"\nOriginal {key}: {state.get(key) or {}}")
+    print("Doctor-confirmed assessment fields are stored separately from these AI results.")
     review["edited_diet_plan"] = edit("diet plan (add/remove foods or change portions)", state.get("agent2_output") or {"diet_plan": state.get("meal_plan") or {}})
     review["edited_lifestyle_recommendations"] = edit("lifestyle recommendations", state.get("lifestyle_plan") or {})
     review["medicines"] = []
     while input("Add a doctor-entered medicine/prescription? (yes/no): ").strip().lower() == "yes":
         medicine = {key: input(f"Medicine {key}: ").strip() or None for key in ("name", "dosage", "frequency", "duration", "instructions")}
-        medicine["doctor_approval_status"] = "DOCTOR APPROVED"
         medicine["source"] = "DOCTOR_ENTERED"
         review["medicines"].append(medicine)
-    state["doctor_review"] = review
     print("\nAI-GENERATED — DOCTOR REVIEW REQUIRED\n")
-    print(json.dumps(final_content(state), indent=2, ensure_ascii=True))
-    warnings = validate_report_state(state)["warnings"]
+    validation = validate_report_state({**state, "doctor_review": review})
+    state["review_validation"] = validation
+    for label in ("failed_checks", "warnings"):
+        print(f"\n{label.replace('_', ' ').title()}:")
+        for message in validation[label]:
+            print(f"- {message}")
+    warnings = validation["warnings"]
     review["validation_reviewed"] = not warnings or input("Have you reviewed every displayed validation warning? (yes/no): ").strip().lower() == "yes"
-    decision = input("Decision (approve / reject / changes): ").strip().lower()
-    review["decision"] = {"approve": "APPROVED", "reject": "REJECTED"}.get(decision, "CHANGES_REQUIRED")
-    review["approved"] = decision == "approve"
-    review["signature"] = input("Doctor sign-off name for this exact content: ").strip() or None
+    while True:
+        decision = input("Decision (APPROVE / REQUEST_CHANGES / REJECT): ").strip().upper()
+        if decision in {"APPROVE", "REQUEST_CHANGES", "REJECT"}:
+            break
+        print("Choose one of the three displayed decisions.")
+    review["decision"] = decision
+    review["approved"] = decision == "APPROVE"
+    if decision == "REQUEST_CHANGES":
+        review["change_requests"] = input("Specific changes requested: ").strip() or None
+    elif decision == "REJECT":
+        review["rejection_reason"] = input("Reason for rejection: ").strip() or None
+    if decision == "APPROVE":
+        review["signature"] = input("Typed doctor name approving this exact content: ").strip() or None
     return review
 
 
@@ -71,19 +87,23 @@ def main():
         if key in state:
             state[key] = {int(k): v for k, v in state[key].items()}
     flow = TwoReportWorkflow(state)
-    flow.begin_doctor_review()
+    try:
+        flow.begin_doctor_review()
+    except PermissionError as error:
+        print(str(error))
+        return
     review = get_doctor_review(state)
-    if review.get("approved") is True:
-        try:
-            flow.approve(review)
+    try:
+        if review:
+            flow.record_decision(review)
+        if review.get("decision") == "APPROVE":
             path = TwoReportPDFGenerator(str(args.session_file.parent)).generate_final_report(state, f"Final_Personalized_Wellness_Report_{flow.session_id}.pdf")
             print(f"DOCTOR APPROVED: {path}")
-        except (ValueError, PermissionError) as error:
-            flow.request_changes()
-            print(f"DOCTOR VERIFICATION REQUIRED: {error}")
-    else:
-        flow.request_changes()
-        print("DOCTOR VERIFICATION REQUIRED")
+        else:
+            print("Report 2 is unavailable for this decision.")
+    except (ValueError, PermissionError) as error:
+        flow.request_changes(review)
+        print(f"DOCTOR VERIFICATION REQUIRED: {error}")
     save_session(state, str(args.session_file.parent))
 
 

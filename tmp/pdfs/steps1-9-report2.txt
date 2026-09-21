@@ -1,0 +1,74 @@
+VedAmrit | English-only AI-assisted wellness workflow
+FINAL PERSONALIZED WELLNESS REPORT
+Page 1
+ VedAmrit
+ FINAL PERSONALIZED WELLNESS REPORT
+Report status
+DOCTOR APPROVED
+Patient Information
+Name: Synthetic QA Patient
+Age: 35
+Gender: Female
+Height (cm): 165
+Weight (kg): 65
+Wellness goal: Better sleep
+Diet type: Vegetarian
+Short Assessment Summary
+Prakriti: Vata
+Vikriti: Vata
+Agni: Vishamagni
+Personalized Diet Timetable
+Day
+Breakfast
+Lunch
+Snack
+Dinner
+Day 1
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 2
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 3
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 4
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 5
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 6
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Day 7
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Moong - 100 g
+Lifestyle Recommendations
+Sleep: Synthetic doctor-reviewed sleep guidance.
+Doctor Review / Approval
+Doctor name: Dr Example
+Registration number: REG-1
+Qualification / specialization: Physician
+Clinic / hospital: Test clinic
+Review date / time: 2026-09-15T17:34:15.572147+00:00
+Approval date / time: 2026-09-15T17:34:15.593610+00:00
+Decision: APPROVE
+Approved by Doctor: Dr Example
+Typed Doctor Name: Dr Example
+Doctor Signature: __________________
+This wellness plan supports your care. Follow the reviewing doctor instructions and seek qualified care for severe symptoms.

@@ -83,183 +83,10 @@ def choose_language() -> str:
 
 
 def get_patient_profile() -> dict[str, Any]:
-    """
-    Collect accurate patient information.
-
-    No default patient values are used.
-    """
-    print("\n" + "=" * 60)
-    print("PATIENT PROFILE")
-    print("=" * 60)
-
-    print("Please provide your accurate information.\n")
-
-    while True:
-        name = input("Enter your Full Name: ").strip()
-
-        if name:
-            break
-
-        print("Name cannot be empty. Please enter your name.")
-
-    while True:
-        age_str = input("Enter your Age: ").strip()
-
-        try:
-            age = int(age_str)
-
-            if age <= 0 or age > 120:
-                print(
-                    "Invalid input. Please enter a realistic age "
-                    "between 1 and 120."
-                )
-                continue
-
-            break
-
-        except ValueError:
-            print("Invalid input. Please enter age as a whole number.")
-
-    while True:
-        gender = input(
-            "Enter your Gender (Male/Female/Other): "
-        ).strip()
-
-        if gender:
-            break
-
-        print("Gender cannot be empty. Please enter your gender.")
-
-    while True:
-        blood_group = input(
-            "Enter your Blood Group (e.g. A+, B+, O+, AB+): "
-        ).strip()
-
-        if blood_group:
-            break
-
-        print("Blood group cannot be empty. Please enter your blood group.")
-
-    while True:
-        height_str = input("Enter your Height in cm: ").strip()
-
-        try:
-            height_cm = float(height_str)
-
-            if height_cm <= 40 or height_cm > 250:
-                print(
-                    "Invalid input. Please enter a valid height "
-                    "in cm, for example 170."
-                )
-                continue
-
-            break
-
-        except ValueError:
-            print("Invalid input. Please enter height as a number.")
-
-    while True:
-        weight_str = input("Enter your Weight in kg: ").strip()
-
-        try:
-            weight_kg = float(weight_str)
-
-            if weight_kg <= 20 or weight_kg > 300:
-                print(
-                    "Invalid input. Please enter a valid weight "
-                    "in kg, for example 65."
-                )
-                continue
-
-            break
-
-        except ValueError:
-            print("Invalid input. Please enter weight as a number.")
-
-    while True:
-        dietary_preference = input(
-            "Enter Dietary Preference "
-            "(Vegetarian / Non-vegetarian / Vegan / Other): "
-        ).strip()
-
-        if dietary_preference:
-            break
-
-        print(
-            "Dietary preference cannot be empty. "
-            "Please enter your preference."
-        )
-
-    while True:
-        allergies_input = input(
-            "Enter Allergies "
-            "(comma separated, or type 'None' if none): "
-        ).strip()
-
-        if allergies_input:
-            break
-
-        print("Please enter your allergies or type 'None'.")
-
-    while True:
-        foods_to_avoid_input = input(
-            "Enter Foods to Avoid "
-            "(comma separated, or type 'None' if none): "
-        ).strip()
-
-        if foods_to_avoid_input:
-            break
-
-        print("Please enter foods to avoid or type 'None'.")
-
-    while True:
-        health_conditions_input = input(
-            "Enter Health Conditions "
-            "(comma separated, or type 'None' if none): "
-        ).strip()
-
-        if health_conditions_input:
-            break
-
-        print("Please enter health conditions or type 'None'.")
-
-    while True:
-        goal = input(
-            "Enter Primary Health Goal "
-            "(e.g. weight management, digestion, general wellness): "
-        ).strip()
-
-        if goal:
-            break
-
-        print("Goal cannot be empty. Please enter your primary goal.")
-
-    def parse_list(value: str) -> list[str]:
-        if not value:
-            return []
-
-        if value.lower() in {"none", "nil", "n/a", "no"}:
-            return []
-
-        return [
-            item.strip()
-            for item in value.split(",")
-            if item.strip()
-        ]
-
-    return {
-        "name": name,
-        "age": age,
-        "gender": gender,
-        "blood_group": blood_group,
-        "height_cm": height_cm,
-        "weight_kg": weight_kg,
-        "dietary_preference": dietary_preference,
-        "allergies": parse_list(allergies_input),
-        "foods_to_avoid": parse_list(foods_to_avoid_input),
-        "health_conditions": parse_list(health_conditions_input),
-        "goal": goal,
-    }
+    from src.services.general_questionnaire import collect_general_profile, validate_general_profile
+    profile = collect_general_profile(get_disease_screening_answers)
+    validate_general_profile(profile)
+    return profile
 
 
 def get_prakriti_answers(language: str) -> dict[int, str]:
@@ -465,101 +292,36 @@ def get_plan_days() -> int:
         )
 
 
-def get_disease_screening_answers() -> dict[str, int] | None:
-    """
-    Ask whether the user wants symptom-based disease screening.
-
-    If the user selects yes, collect all 31 symptom features.
-    If the user selects no, return None.
-    """
-    print("\n" + "=" * 60)
-    print("OPTIONAL DISEASE SCREENING")
-    print("=" * 60)
-
-    while True:
-        choice = input(
-            "Do you want to include symptom-based disease screening? "
-            "(yes/no): "
-        ).strip().lower()
-
-        if choice in {"yes", "y"}:
-            do_screening = True
-            break
-
-        if choice in {"no", "n"}:
-            do_screening = False
-            break
-
-        print(
-            "Invalid input. Please enter 'yes' or 'no'."
-        )
-
-    if not do_screening:
-        print(
-            "Skipping disease screening as requested.\n"
-        )
-        return None
-
-    feature_names = DEFAULT_DISEASE_FEATURES
-
+def disease_feature_names() -> list[str]:
+    """Reuse the model feature order and original fallback labels."""
     if FEATURE_PKL_PATH.exists():
         try:
             with open(FEATURE_PKL_PATH, "rb") as file:
-                loaded_features = pickle.load(file)
-
-                if (
-                    isinstance(loaded_features, list)
-                    and len(loaded_features) == 31
-                ):
-                    feature_names = loaded_features
-
+                features = pickle.load(file)
+            if isinstance(features, list) and len(features) == 31:
+                return features
         except Exception:
-            feature_names = DEFAULT_DISEASE_FEATURES
+            pass
+    return DEFAULT_DISEASE_FEATURES
 
-    print(
-        "\nPlease answer the following 31 symptom screening questions."
-    )
-    print(
-        "Enter 1 for YES (symptom present) "
-        "or 0 for NO (symptom absent).\n"
-    )
 
-    symptoms: dict[str, int] = {}
-
-    for index, feature in enumerate(
-        feature_names,
-        start=1,
-    ):
-        display_name = feature.replace(
-            "_",
-            " ",
-        ).title()
-
-        while True:
-            answer = input(
-                f"{index}. Do you experience {display_name}? "
-                "(1 = Yes, 0 = No): "
-            ).strip()
-
-            if answer in {"1", "0"}:
-                symptoms[feature] = int(answer)
-                break
-
-            if answer.lower() in {"y", "yes"}:
-                symptoms[feature] = 1
-                break
-
-            if answer.lower() in {"n", "no"}:
-                symptoms[feature] = 0
-                break
-
-            print(
-                "Invalid input. Please enter 1 (Yes) or 0 (No)."
-            )
-
-    print()
-
-    return symptoms
+def get_disease_screening_answers() -> list[str]:
+    """Q13: select existing symptoms once, rather than asking 31 questions."""
+    from src.services.general_questionnaire import choose, required_text
+    if choose("13. Are you currently experiencing any symptoms or health complaints?", ("No", "Yes")) == "No":
+        return []
+    features = disease_feature_names()
+    for index, feature in enumerate(features, 1):
+        print(f"  {index}. {feature}")
+    while True:
+        answer = required_text("Select all symptoms that apply (comma-separated option numbers)")
+        try:
+            numbers = list(dict.fromkeys(int(item.strip()) for item in answer.split(",")))
+            if not numbers or any(number < 1 or number > len(features) for number in numbers):
+                raise ValueError
+            return [features[number - 1] for number in numbers]
+        except ValueError:
+            print("Select one or more of the displayed symptom options.")
 
 
 def get_doctor_review(state=None) -> dict[str, Any]:
@@ -576,8 +338,8 @@ def get_doctor_review(state=None) -> dict[str, Any]:
         "qualified_reviewer": True,
         "doctor_name": entry("Doctor name"),
         "registration_number": entry("Registration number"),
-        "qualification": entry("Qualification"),
-        "contact_information": entry("Contact information"),
+        "qualification": entry("Qualification / specialization"),
+        "clinic": entry("Clinic / hospital"),
         "observations": entry("Clinical observations"),
         "confirmed_symptoms": entry("Doctor-confirmed symptoms"),
         "confirmed_prakriti": entry("Doctor-confirmed Prakriti"),
@@ -590,7 +352,6 @@ def get_doctor_review(state=None) -> dict[str, Any]:
         "follow_up_date": entry("Follow-up date"),
         "follow_up_instructions": entry("Follow-up instructions / progress monitoring"),
         "final_comments": entry("Final comments"),
-        "signature": entry("Doctor signature / sign-off name"),
     }
     review["edited_diet_plan"] = None
     review["edited_lifestyle_recommendations"] = None
@@ -607,10 +368,6 @@ def main() -> None:
 
         # STEP 2: Collect real patient profile
         patient_profile = get_patient_profile()
-        for field in ("activity_level", "sleep_information", "stress_level", "food_intolerances", "medicine_allergies", "medication_restrictions", "pregnancy_information", "significant_dietary_restrictions", "season"):
-            value = input(f"{field.replace('_', ' ').title()} (blank means unknown; use none/not applicable only if confirmed): ").strip()
-            patient_profile[field] = value or None
-
         # STEP 3: Collect 21 Prakriti answers
         prakriti_answers = get_prakriti_answers(language)
 
@@ -620,25 +377,20 @@ def main() -> None:
         # STEP 5: Collect 11 Agni answers
         agni_answers = get_agni_answers(language)
 
-        # STEP 6: Ask diet plan duration
-        plan_days = get_plan_days()
-
-        # STEP 7: Optional disease screening
-        disease_symptoms = get_disease_screening_answers()
-
-        # STEP 8: Prepare LangGraph state
+        # Diet duration is a workflow setting, not an additional patient question.
+        # DietPlanningState is the common patient state; profiles are collected once.
         initial_state = {
-            "answers": prakriti_answers,
             "questionnaire_answers": prakriti_answers,
             "vikriti_answers": vikriti_answers,
             "agni_answers": agni_answers,
             "patient_profile": patient_profile,
-            "user_input": patient_profile,
-            "plan_days": plan_days,
+            "plan_days": 7,
         }
-
-        if disease_symptoms is not None:
-            initial_state["disease_symptoms"] = disease_symptoms
+        if patient_profile["symptoms"]:
+            initial_state["disease_symptoms"] = {
+                feature: int(feature in patient_profile["symptoms"])
+                for feature in disease_feature_names()
+            }
 
         print("\n" + "=" * 60)
 
@@ -665,21 +417,20 @@ def main() -> None:
         report_workflow.register_agent3_draft()
         report_workflow.begin_doctor_review()
         doctor_review = get_doctor_review(result)
-        result["doctor_review"] = doctor_review
-        if doctor_review.get("approved"):
-            try:
-                report_workflow.approve(doctor_review)
+        try:
+            if doctor_review:
+                report_workflow.record_decision(doctor_review)
+            if doctor_review.get("decision") == "APPROVE":
                 report2_path = report_generator.generate_final_report(
                     result,
                     filename=f"Final_Personalized_Wellness_Report_{report_workflow.session_id}.pdf",
                 )
                 print(f"\nDoctor-approved final report generated:\n{Path(report2_path).resolve()}")
-            except (ValueError, PermissionError) as error:
-                report_workflow.request_changes()
-                print(f"\nDOCTOR VERIFICATION REQUIRED: {error}")
-        else:
-            report_workflow.request_changes()
-            print("\nDOCTOR VERIFICATION REQUIRED - Report 2 was not generated.")
+            else:
+                print("\nReport 2 was not generated. Review status: " + result["workflow_status"])
+        except (ValueError, PermissionError) as error:
+            report_workflow.request_changes(doctor_review)
+            print(f"\nDOCTOR VERIFICATION REQUIRED: {error}")
 
         # STEP 10: Display final response
         print("\n" + "=" * 60)

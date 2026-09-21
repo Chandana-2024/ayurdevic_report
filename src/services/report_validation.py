@@ -108,7 +108,7 @@ def _items(value: Any) -> set[str]:
 
 def validate_report_state(state: dict[str, Any]) -> dict[str, Any]:
     """Create one normalized, printable report snapshot and validation result."""
-    profile = {**(state.get("user_input") or {}), **(state.get("patient_profile") or {})}
+    profile = state.get("patient_profile") or state.get("user_input") or {}
     diet = selected_diet(state)
     days = diet.get("days") or []
     warnings: list[str] = []
@@ -204,6 +204,7 @@ def validate_report_state(state: dict[str, Any]) -> dict[str, Any]:
     exclusions = _items(profile.get("foods_to_avoid", profile.get("food_exclusions", [])))
     exclusions |= _items((state.get("doctor_review") or {}).get("food_restrictions"))
     exclusions |= _items(profile.get("medication_restrictions"))
+    exclusions |= _items(profile.get("doctor_restrictions"))
     conditions = _items(profile.get("health_conditions")) - {"none", "not applicable"}
     for day in calculated_days:
         for meal in day.get("meals", []):
@@ -220,6 +221,14 @@ def validate_report_state(state: dict[str, Any]) -> dict[str, Any]:
                     failed_checks.append(f"Restricted food selected: {food_name}.")
 
     doctor_review = state.get("doctor_review") or {}
+    lifestyle = doctor_review.get("edited_lifestyle_recommendations")
+    if lifestyle is None:
+        lifestyle = state.get("lifestyle_plan") or {}
+    warnings.extend(lifestyle.get("safety_flags") or [])
+    warnings.extend((state.get("validation_result") or {}).get("warnings") or [])
+    for field in ("current_medicines", "doctor_restrictions"):
+        if profile.get(field):
+            warnings.append(f"REVIEW REQUIRED: doctor must reconcile patient-provided {field.replace('_', ' ')} with the plan.")
     for field in ("health_conditions", "medication_restrictions", "pregnancy_information", "symptom_severity", "significant_dietary_restrictions"):
         if profile.get(field) and str(profile[field]).lower() not in {"none", "not applicable"}:
             warnings.append(f"REVIEW REQUIRED: doctor must reconcile {field.replace('_', ' ')} with the diet and lifestyle draft.")

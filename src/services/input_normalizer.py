@@ -148,6 +148,10 @@ def normalize_patient_profile(profile_data: dict[str, Any]) -> dict[str, Any]:
     goal = normalize_goal(profile_data.get("goal"))
 
     return {
+        # Preserve supplied general/legacy clinical fields. Never merge stale user_input
+        # back over this canonical profile or silently discard questionnaire answers.
+        **{key: value for key, value in profile_data.items()
+           if key not in {"season", "current_season", "seasonal_guidance"}},
         "name": name,
         "age": age,
         "gender": gender,

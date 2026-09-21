@@ -1,0 +1,280 @@
+
+==============================
+FINAL REPLANNED DIET
+==============================
+
+Replanned: True
+Overall valid: False
+
+BREAKFAST
+Target calories: 443.1
+Actual calories: 445.2
+Difference: 2.1
+ - Dosa | 265 g | 445.2 kcal
+Valid: True
+Issues: None
+
+LUNCH
+Target calories: 620.3
+Actual calories: 635.5
+Difference: 15.2
+ - Rice with Dal Tadka | 250 g | 325.0 kcal
+ - Vegetable Sambar | 345 g | 310.5 kcal
+Valid: True
+Issues: None
+
+SNACK
+Target calories: 177.2
+Actual calories: 182.0
+Difference: 4.8
+ - Coconut Date Balls | 65 g | 182.0 kcal
+Valid: True
+Issues: None
+
+DINNER
+Target calories: 531.7
+Actual calories: 590.5
+Difference: 58.8
+ - Rice with Dal Tadka | 250 g | 325.0 kcal
+ - Vegetable Sambar | 295 g | 265.5 kcal
+Valid: False
+Issues:
+ - Calorie target exceeded by 58.8 kcal
+
+==============================
+DIET VALIDATION
+==============================
+
+Overall valid: False
+
+BREAKFAST
+Target calories: 443.1
+Actual calories: 451.5
+Calorie difference: 8.4
+Valid: True
+Issues: None
+
+LUNCH
+Target calories: 620.3
+Actual calories: 687.5
+Calorie difference: 67.2
+Valid: False
+Issues:
+ - Calorie target exceeded by 67.2 kcal
+
+SNACK
+Target calories: 177.2
+Actual calories: 200.0
+Calorie difference: 22.8
+Valid: False
+Issues:
+ - Calorie target exceeded by 22.8 kcal
+
+DINNER
+Target calories: 531.7
+Actual calories: 628.0
+Calorie difference: 96.3
+Valid: False
+Issues:
+ - Calorie target exceeded by 96.3 kcal
+
+============================================================
+STARTING AYURGENIX FULL LANGGRAPH TEST
+============================================================
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 1554.04it/s]
+...........................................
+----------------------------------------------------------------------
+Ran 43 tests in 1.315s
+
+OK
+
+============================================================
+PDF REPORT GENERATED
+============================================================
+PDF Path: reports\AI_Assessment_Report_7bd47d16-f36d-4a61-8b5d-b3ba144395ac.pdf
+
+============================================================
+LANGGRAPH EXECUTION COMPLETED
+============================================================
+
+DISEASE SCREENING
+----------------------------
+Predicted condition: Gastritis
+Model probability: 1.0
+Status: screening_only
+
+PRAKRITI
+----------------------------
+Constitution: Vata-Pitta
+Primary: Vata
+Secondary: Pitta
+
+VIKRITI
+----------------------------
+Dominant Dosha: Pitta
+Scores: {'Vata': 13, 'Pitta': 27, 'Kapha': 13}
+
+AGNI
+----------------------------
+Status: Samagni
+Category Scores: {'Mandagni': 0, 'Vishamagni': 0, 'Samagni': 11, 'Tikshnagni': 0}
+
+DIET PLAN
+----------------------------
+Diet plan generated successfully.
+
+LIFESTYLE
+----------------------------
+Lifestyle plan generated successfully.
+
+FINAL RESPONSE
+----------------------------
+Final report generated successfully.
+
+
+============================================================
+COMPLETE AYURGENIX REPORT
+============================================================
+
+DOCTOR VERIFICATION REQUIRED
+AI-GENERATED — DOCTOR REVIEW REQUIRED
+Review assessment, diet and lifestyle drafts in the doctor workflow.
+
+============================================================
+TEST FINISHED
+============================================================
+
+===================================
+AYURGENIX - AGENT 3
+===================================
+
+Agent: Personalized Lifestyle RAG Agent
+Status: AI-GENERATED - DOCTOR REVIEW REQUIRED
+
+--- Lifestyle Plan ---
+
+
+### RECOMMENDATIONS
+- {'category': 'daily_routine', 'personalized_recommendation': 'Use a stable wake, meal, and wind-down schedule that fits your current daily commitments.', 'patient_specific_reason': 'This is tailored to Vata and the recorded goal of general wellness.', 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Adjust for work, caregiving, symptoms, and doctor instructions; do not use this as treatment.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'meal_timing', 'personalized_recommendation': 'Use the existing Agent 2 meal schedule as an anchor and record skipped meals and digestive discomfort for doctor review; avoid compensatory fasting.', 'patient_specific_reason': 'Agni is recorded as Vishamagni, so timing guidance requires clinical review if symptoms persist.', 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'This is not a diet plan and does not override Agent 2, allergies, conditions, or doctor restrictions.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'sleep', 'personalized_recommendation': 'Set a consistent, low-stimulation pre-sleep routine and record whether sleep quality changes over the next review period.', 'patient_specific_reason': 'Sleep information is not provided; Vata/Pitta-related assessment factors also make regular wind-down especially relevant.', 'ayurvedic_basis': {'source': 'Sushruta Samhita 1.pdf', 'page': '185', 'support': 'Retrieved Ayurvedic passage for doctor verification; topic matching alone does not verify a recommendation.', 'verified': False}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Seek clinical assessment for severe, persistent, or safety-critical sleep problems.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+- {'category': 'stress_management', 'personalized_recommendation': 'Schedule a brief, non-strenuous calming practice you already tolerate, such as quiet breathing or reflection, and note its effect on routine and sleep.', 'patient_specific_reason': 'Stress is not provided; this is adapted to the current Vata assessment rather than offered as a cure.', 'ayurvedic_basis': {'source': 'Not provided', 'support': 'RAG support unavailable; doctor review required.'}, 'wellness_basis': 'Not provided: no independently verified wellness source supplied.', 'safety_consideration': 'Do not use this in place of mental-health, emergency, or medical care.', 'ai_generated_status': 'AI-GENERATED — DOCTOR REVIEW REQUIRED', 'doctor_review_status': 'REVIEW REQUIRED'}
+
+### SAFETY_FLAGS
+- REVIEW REQUIRED: allergy, intolerance, avoided-food, or condition information is incomplete.
+
+### DRAFT_STATUS
+- A
+- I
+- -
+- G
+- E
+- N
+- E
+- R
+- A
+- T
+- E
+- D
+-  
+- —
+-  
+- D
+- O
+- C
+- T
+- O
+- R
+-  
+- R
+- E
+- V
+- I
+- E
+- W
+-  
+- R
+- E
+- Q
+- U
+- I
+- R
+- E
+- D
+
+--- RAG EVIDENCE ---
+
+==============================
+AYURGENIX — AGENT 2
+PERSONALIZED DIET PLAN
+==============================
+
+Status: needs_review
+
+NUTRITION TARGET
+Calories: 1772.4
+Protein: 66.0 g
+Carbs: 266.3 g
+Fat: 49.2 g
+Fiber: 30 g
+
+MEAL PLAN
+
+BREAKFAST
+Target: 443.1 kcal
+Actual: 445.2 kcal
+Difference: 2.1 kcal
+ - Dosa | 265 g | 445.2 kcal | Score: 2
+
+LUNCH
+Target: 620.3 kcal
+Actual: 635.5 kcal
+Difference: 15.2 kcal
+ - Rice with Dal Tadka | 250 g | 325.0 kcal | Score: 9
+ - Vegetable Sambar | 345 g | 310.5 kcal | Score: 9
+
+SNACK
+Target: 177.2 kcal
+Actual: 182.0 kcal
+Difference: 4.8 kcal
+ - Coconut Date Balls | 65 g | 182.0 kcal | Score: 9
+
+DINNER
+Target: 531.7 kcal
+Actual: 590.5 kcal
+Difference: 58.8 kcal
+ - Rice with Dal Tadka | 250 g | 325.0 kcal | Score: 9
+ - Vegetable Sambar | 295 g | 265.5 kcal | Score: 9
+
+VALIDATION
+Overall valid: False
+
+EXCLUDED FOODS
+Total excluded: 20
+
+==============================
+FINAL PORTION PLAN
+==============================
+
+BREAKFAST
+Target calories: 443.1
+ - Idli | Portion: 150 g | Calories: 219.0
+ - Millet Khichdi | Portion: 150 g | Calories: 232.5
+
+LUNCH
+Target calories: 620.3
+ - Khichdi with Ghee | Portion: 250 g | Calories: 362.5
+ - Rice with Dal Tadka | Portion: 250 g | Calories: 325.0
+
+SNACK
+Target calories: 177.2
+ - Mung Bean Soup | Portion: 200 g | Calories: 200.0
+
+DINNER
+Target calories: 531.7
+ - Khichdi with Ghee | Portion: 250 g | Calories: 362.5
+ - Lentil Soup with Ginger | Portion: 295 g | Calories: 265.5
+13. Are you currently experiencing any symptoms or health complaints?
+  1. No
+  2. Yes
